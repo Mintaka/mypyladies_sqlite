@@ -4,7 +4,11 @@ import pathlib
 import csv
 import sqlite3
 
-connection = sqlite3.connect("mydatabase.sqlite")
+DATABASE_FILE = './.database/mojedata.sqlite'
+DOWNLOAD_FOLDER = './.download'
+DATASETS_FOLDER = './.datasets'
+
+connection = sqlite3.connect(DATABASE_FILE)
 cursor = connection.cursor()
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS temperatures (
@@ -15,23 +19,21 @@ cursor.execute("""
         temperatue real
     );""")
 
-
-url = "https://www.chmi.cz/files/portal/docs/meteo/ok/denni_data/T-AVG/Plzensky/L1PLMI01_T_N.csv.zip"
-# TODO ziskat nazev souboru pomoci pathlib
-filename = url.split("/")[-1]
+url = 'https://www.chmi.cz/files/portal/docs/meteo/ok/denni_data/T-AVG/Plzensky/L1PLMI01_T_N.csv.zip'
+filename = url.split('/')[-1]
 
 r = requests.get(url, allow_redirects=True)
-open(filename, "wb").write(r.content)
+open(DOWNLOAD_FOLDER + '/' + filename, 'wb').write(r.content)
 
-with zipfile.ZipFile(filename, "r") as zip_ref:
-    zip_ref.extractall(".")
+with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
+    zip_ref.extractall(DATASETS_FOLDER)
 
-csv_files = (list(pathlib.Path('.').glob('*.csv')))
+csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
     print(csv_file)
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
-        for row in list(csvreader)[34:]:
+        for row in csvreader:
             print(row)
             if len(row) < 4:
                 continue
@@ -39,12 +41,8 @@ for csv_file in csv_files:
 
 connection.commit()
 
-data = cursor.execute(f"SELECT count(*) FROM temperatures;")
+data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
-
-data = cursor.execute(f"SELECT * FROM temperatures;")
+data = cursor.execute(f'SELECT * FROM temperatures;')
 print(data.fetchall())
-
-
-
 
