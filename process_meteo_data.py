@@ -1,14 +1,35 @@
+import os
 import requests
 import zipfile
 import pathlib
 import csv
 import sqlite3
 
-DATABASE_FILE = './.database/mojedata.sqlite'
-DOWNLOAD_FOLDER = './.download'
-DATASETS_FOLDER = './.datasets'
+import data_sources
 
-connection = sqlite3.connect(DATABASE_FILE)
+def create_missing_folders(folders):
+    """Check and create folder if not exist"""
+    for folder in folders:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+DATABASE_FILE = "mydata.sqlite"
+
+DATABASE_FOLDER = './.database/'
+DOWNLOAD_FOLDER = './.download/'
+DATASETS_FOLDER = './.datasets/'
+EXPORTS_FOLDER = './.exports/'
+
+WORKING_FOLDERS = [
+                    DATABASE_FOLDER,
+                    DOWNLOAD_FOLDER,
+                    DATASETS_FOLDER,
+                    EXPORTS_FOLDER,
+                  ]
+
+create_missing_folders(WORKING_FOLDERS)
+
+connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS temperatures (
