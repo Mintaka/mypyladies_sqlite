@@ -13,6 +13,18 @@ def create_missing_folders(folders):
         if not os.path.exists(folder):
             os.makedirs(folder)
 
+def create_data_structure(cursor):
+    """Create tables for meteo data"""
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS temperatures (
+            id INTEGER PRIMARY KEY,
+            year int,
+            month int,
+            day int,
+            temperatue real
+        );""")
+
+
 DATABASE_FILE = "mydata.sqlite"
 
 DATABASE_FOLDER = './.database/'
@@ -28,30 +40,30 @@ WORKING_FOLDERS = [
                   ]
 
 create_missing_folders(WORKING_FOLDERS)
-
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS temperatures (
-        id INTEGER PRIMARY KEY,
-        year int,
-        month int,
-        day int,
-        temperatue real
-    );""")
 
-url = 'https://www.chmi.cz/files/portal/docs/meteo/ok/denni_data/T-AVG/Plzensky/L1PLMI01_T_N.csv.zip'
-filename = url.split('/')[-1]
 
-r = requests.get(url, allow_redirects=True)
-open(DOWNLOAD_FOLDER + '/' + filename, 'wb').write(r.content)
+url_prefix = data_sources.average_temperature_prefix
+# Read and extract all data sources
+for region, files in data_sources.source_files.items():
+    for filename in files:
+        print(f"Proces data for region: {region} file: {filename}")
 
-with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
-    zip_ref.extractall(DATASETS_FOLDER)
+        # Download one data source
+        url = f"{url_prefix}/{region}/{filename}"
+        filename = pathlib.Path(url).name
+        r = requests.get(url, allow_redirects=True)
+        open(DOWNLOAD_FOLDER + '/' + filename, 'wb').write(r.content)
 
+        # Extract
+        with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
+            zip_ref.extractall(DATASETS_FOLDER)
+
+# Read from CSV and insert into database
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
-    print(csv_file)
+    print(f"Read file: {csv_file}")
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         for row in csvreader:
@@ -62,8 +74,8 @@ for csv_file in csv_files:
 
 connection.commit()
 
-data = cursor.execute(f'SELECT count(*) FROM temperatures;')
-print(data.fetchall())
 data = cursor.execute(f'SELECT * FROM temperatures;')
+print(data.fetchall())
+data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
 
