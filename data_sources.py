@@ -2,7 +2,11 @@
 
 average_temperature_prefix = "https://www.chmi.cz/files/portal/docs/meteo/ok/denni_data/T-AVG/"
 source_files = {
-                 "Plzensky": [
-                              "L1PLMI01_T_N.csv.zip",
-                             ],
-               }
+        "Jihocesky": [
+            "C2BYNO01_T_N.csv.zip",
+            "C2CBUD01_T_N.csv.zip",
+            ],
+        "Plzensky": [
+            "L1PLMI01_T_N.csv.zip",
+            ],
+        }
