@@ -6,9 +6,13 @@ source_files = {
                               "C2BYNO01_T_N.csv.zip",
                               "C2CBUD01_T_N.csv.zip",
                  ],
+                 "Stredocesky": [
+                              "P3HULI01_T_N.csv.zip",
+                              "P3NETV01_T_N.csv.zip",
+                 ],
                  "Liberecky": [
                               "U2HRAD01_T_N.csv.zip",
-			      "U2STRR01_T_N.csv.zip",
+			                  "U2STRR01_T_N.csv.zip",
                              ],
                  "Plzensky": [
                               "L1PLMI01_T_N.csv.zip",
