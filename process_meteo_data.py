@@ -49,7 +49,7 @@ url_prefix = data_sources.average_temperature_prefix
 # Read and extract all data sources
 for region, files in data_sources.source_files.items():
     for filename in files:
-        #print(f"Proces data for region: {region} file: {filename}")
+        print(f"Proces data for region: {region} file: {filename}")
 
         # Download one data source
         url = f"{url_prefix}/{region}/{filename}"
@@ -78,7 +78,7 @@ connection.commit()
 data = cursor.execute(f'SELECT * FROM temperatures;')
 #print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
-#print(data.fetchall())
+print(data.fetchall())
 
 def years_select(cursor):
     y = input("Select which year you would like to see temperatures from: ")
