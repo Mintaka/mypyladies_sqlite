@@ -24,4 +24,8 @@ source_files = {
                             "U1SNEZ01_T_N.csv.zip",
                             "U2VARN01_T_N.csv.zip",
                             ],
+                 "Pardubicky": [
+                            "H3CHRU01_T_N.csv.zip",
+                            "H3KRAS01_T_N.csv.zip",
+                           ],
                }
