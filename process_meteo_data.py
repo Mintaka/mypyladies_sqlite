@@ -21,7 +21,7 @@ def create_data_structure(cursor):
             year int,
             month int,
             day int,
-            temperatue real
+            temperature real
         );""")
 
 
@@ -43,12 +43,13 @@ create_missing_folders(WORKING_FOLDERS)
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
 
+create_data_structure(cursor)
 
 url_prefix = data_sources.average_temperature_prefix
 # Read and extract all data sources
 for region, files in data_sources.source_files.items():
     for filename in files:
-        print(f"Proces data for region: {region} file: {filename}")
+        #print(f"Proces data for region: {region} file: {filename}")
 
         # Download one data source
         url = f"{url_prefix}/{region}/{filename}"
@@ -63,11 +64,11 @@ for region, files in data_sources.source_files.items():
 # Read from CSV and insert into database
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
-    print(f"Read file: {csv_file}")
+    #print(f"Read file: {csv_file}")
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         for row in csvreader:
-            print(row)
+            #print(row)
             if len(row) < 4:
                 continue
             cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{row[3]}")')
@@ -75,7 +76,15 @@ for csv_file in csv_files:
 connection.commit()
 
 data = cursor.execute(f'SELECT * FROM temperatures;')
-print(data.fetchall())
+#print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
-print(data.fetchall())
+#print(data.fetchall())
 
+def years_select(cursor):
+    y = input("Select which year you would like to see temperatures from: ")
+    result = cursor.execute(f"""
+        SELECT * FROM temperatures
+        WHERE year LIKE {y}""")
+    print(result.fetchall())
+
+years_select(cursor)
