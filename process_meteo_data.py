@@ -21,7 +21,7 @@ def create_data_structure(cursor):
             year int,
             month int,
             day int,
-            temperatue real
+            temperature real
         );""")
 
 
@@ -42,7 +42,7 @@ WORKING_FOLDERS = [
 create_missing_folders(WORKING_FOLDERS)
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
-
+create_data_structure(cursor)
 
 url_prefix = data_sources.average_temperature_prefix
 # Read and extract all data sources
