@@ -21,7 +21,7 @@ def create_data_structure(cursor):
             year int,
             month int,
             day int,
-            temperatue real
+            temperature real
         );""")
 
 
@@ -42,6 +42,7 @@ WORKING_FOLDERS = [
 create_missing_folders(WORKING_FOLDERS)
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
+create_data_structure(cursor)
 
 
 url_prefix = data_sources.average_temperature_prefix
@@ -60,6 +61,14 @@ for region, files in data_sources.source_files.items():
         with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
             zip_ref.extractall(DATASETS_FOLDER)
 
+def update_measurement_format(measurement):
+    try:
+        updated_measurement = float(measurement.replace(",", "."))
+    except ValueError:
+        updated_measurement = measurement
+    return updated_measurement
+
+
 # Read from CSV and insert into database
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
@@ -70,7 +79,7 @@ for csv_file in csv_files:
             print(row)
             if len(row) < 4:
                 continue
-            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{row[3]}")')
+            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{update_measurement_format(row[3])}")')
 
 connection.commit()
 
