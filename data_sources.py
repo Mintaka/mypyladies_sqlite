@@ -8,7 +8,7 @@ source_files = {
                  ],
                  "Liberecky": [
                               "U2HRAD01_T_N.csv.zip",
-			                        "U2STRR01_T_N.csv.zip",
+			      "U2STRR01_T_N.csv.zip",
                              ],
                  "Stredocesky": [
                               "P3BENS01_T_N.csv.zip",
