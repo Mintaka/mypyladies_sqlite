@@ -23,7 +23,31 @@ def create_data_structure(cursor):
             day int,
             temperature real
         );""")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS meteostations (
+            id INTEGER PRIMARY KEY,
+            name text,
+            longtitude real,
+            latitutde real
+        );""")
 
+def get_meteostation_metadata(filename):
+    """ Get last record from metadata and return (name, longtitude, latitude)"""
+    with open(filename, encoding='cp1250') as _file:
+        in_metadata = False
+        metadata = []
+        for line in _file.readlines():
+            print("&", line.strip())
+            line = line.strip()
+            if line == "METADATA":
+                in_metadata = True
+            if in_metadata and line == "":
+                break
+            if in_metadata == True:
+                metadata.append(line)
+    print(metadata)
+    splited_line = metadata[-1].split(";")
+    return splited_line[1], splited_line[-3].replace(",", "."), splited_line[-2].replace(",", ".")
 
 DATABASE_FILE = "mydata.sqlite"
 
@@ -73,10 +97,12 @@ def update_measurement_format(measurement):
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
     print(f"Read file: {csv_file}")
+    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
+    cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         for row in csvreader:
-            print(row)
+            # print(row)
             if len(row) < 4:
                 continue
             cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{update_measurement_format(row[3])}")')
@@ -84,7 +110,10 @@ for csv_file in csv_files:
 connection.commit()
 
 data = cursor.execute(f'SELECT * FROM temperatures;')
-print(data.fetchall())
+# print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
 
+data = cursor.execute(f'SELECT * FROM meteostations;')
+for _id, meteostation_name, longtitude, latitude in data.fetchall():
+    print([longtitude, latitude])
