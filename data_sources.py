@@ -25,6 +25,8 @@ source_files = {
 
 
                  "Plzensky": [
+                              "L1DOMA01_T_N.csv.zip",
+                              "L1LIBK01_T_N.csv.zip",
                               "L1PLMI01_T_N.csv.zip",
 			      "C1SUSI01_T_N.csv.zip",
                               "C1KHOR01_T_N.csv.zip",
