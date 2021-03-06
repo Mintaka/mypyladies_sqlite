@@ -4,6 +4,7 @@ import zipfile
 import pathlib
 import csv
 import sqlite3
+import pandas as pd
 
 import data_sources
 
@@ -39,9 +40,12 @@ WORKING_FOLDERS = [
                     EXPORTS_FOLDER,
                   ]
 
+df_all =  pd.DataFrame(columns = ["Rok","Měsíc","Den","Hodnota","Příznak"])
+
 create_missing_folders(WORKING_FOLDERS)
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
+create_data_structure(cursor)
 
 
 url_prefix = data_sources.average_temperature_prefix
@@ -63,19 +67,25 @@ for region, files in data_sources.source_files.items():
 # Read from CSV and insert into database
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
-    print(f"Read file: {csv_file}")
-    with open(csv_file, encoding='cp1250') as csv_data:
-        csvreader = csv.reader(csv_data, delimiter=';')
-        for row in csvreader:
-            print(row)
-            if len(row) < 4:
-                continue
-            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{row[3]}")')
-
-connection.commit()
-
-data = cursor.execute(f'SELECT * FROM temperatures;')
-print(data.fetchall())
+    #read the csv file, determine where the data begin
+    with open (csv_file, encoding='cp1250') as csv_data:
+        obsah = csv_data.read()
+        pozice = obsah.index("Rok;Měsíc;Den;Hodnota;Příznak") + 29
+        print(pozice)
+        obsah = obsah[pozice:]
+    #create a file with data only for import
+    with open ('data_pro_zapis.csv', mode = 'w', encoding = "cp1250") as soubor:
+        print(obsah, file = soubor)
+    #create a pd Dataframe from the individual file, append pd Dataframe with all the data
+    sloupce = ["Rok","Měsíc","Den","Hodnota","Příznak"]
+    df_from_file = pd.read_csv("data_pro_zapis.csv", delimiter = ";", names = sloupce)
+    df_from_file['stanice'] = pathlib.Path(csv_file).stem
+    df_all =  df_all.append(df_from_file)
+    
+print(df_all)
+#insert all data to sql db
+df_all.to_sql("temperatures", connection, if_exists = "replace")
+  
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
 
