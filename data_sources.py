@@ -39,4 +39,8 @@ source_files = {
                             "H3CHRU01_T_N.csv.zip",
                             "H3KRAS01_T_N.csv.zip",
                            ],
+                 "Kralovehradecky": [
+                            "H3SVOD01_T_N.csv.zip",
+                            "H3NBYD01_T_N.csv.zip",
+                           ],
                }
