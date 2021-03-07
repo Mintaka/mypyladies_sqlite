@@ -40,7 +40,7 @@ WORKING_FOLDERS = [
                     EXPORTS_FOLDER,
                   ]
 
-df_all =  pd.DataFrame(columns = ["Rok","Měsíc","Den","Hodnota","Příznak"])
+df_all =  pd.DataFrame(columns = ["stanice","datum","Hodnota","Příznak"])
 
 create_missing_folders(WORKING_FOLDERS)
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
@@ -78,8 +78,10 @@ for csv_file in csv_files:
         print(obsah, file = soubor)
     #create a pd Dataframe from the individual file, append pd Dataframe with all the data
     sloupce = ["Rok","Měsíc","Den","Hodnota","Příznak"]
-    df_from_file = pd.read_csv("data_pro_zapis.csv", delimiter = ";", names = sloupce)
+    df_from_file = pd.read_csv("data_pro_zapis.csv", delimiter = ";", names = sloupce, parse_dates = [[0,1,2]],decimal = ',')
     df_from_file['stanice'] = pathlib.Path(csv_file).stem
+    df_from_file["datum"] = df_from_file["Rok_Měsíc_Den"].dt.strftime("%d/%m/%Y") 
+    df_from_file = df_from_file[["stanice","datum","Hodnota","Příznak"]]
     df_all =  df_all.append(df_from_file)
     
 print(df_all)
