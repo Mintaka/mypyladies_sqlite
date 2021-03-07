@@ -112,8 +112,22 @@ connection.commit()
 data = cursor.execute(f'SELECT * FROM temperatures;')
 # print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
-print(data.fetchall())
+# print(data.fetchall())
 
 data = cursor.execute(f'SELECT * FROM meteostations;')
 for _id, meteostation_name, longtitude, latitude in data.fetchall():
     print([longtitude, latitude])
+
+def get_daily_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
+    date_from_list = list(map(int, date_from.split(".")))
+    date_to_list = list(map(int, date_to.split(".")))
+    daily = cursor.execute(f"""SELECT * FROM temperatures
+                                WHERE day BETWEEN {date_from_list[0]} AND {date_to_list[0]}
+                                AND month BETWEEN {date_from_list[1]} AND {date_to_list[1]}
+                                AND year BETWEEN {date_from_list[2]} and {date_to_list[2]}
+                                ORDER BY year;""")
+    daily_result = daily.fetchall()
+    return daily_result
+
+#print(get_daily_average_temperatures(cursor, date_from = "1.1.1991", date_to = "1.1.1993"))
+
