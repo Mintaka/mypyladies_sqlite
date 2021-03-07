@@ -23,7 +23,31 @@ def create_data_structure(cursor):
             day int,
             temperature real
         );""")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS meteostations (
+            id INTEGER PRIMARY KEY,
+            name text,
+            longtitude real,
+            latitutde real
+        );""")
 
+def get_meteostation_metadata(filename):
+    """ Get last record from metadata and return (name, longtitude, latitude)"""
+    with open(filename, encoding='cp1250') as _file:
+        in_metadata = False
+        metadata = []
+        for line in _file.readlines():
+            print("&", line.strip())
+            line = line.strip()
+            if line == "METADATA":
+                in_metadata = True
+            if in_metadata and line == "":
+                break
+            if in_metadata == True:
+                metadata.append(line)
+    print(metadata)
+    splited_line = metadata[-1].split(";")
+    return splited_line[1], splited_line[-3].replace(",", "."), splited_line[-2].replace(",", ".")
 
 DATABASE_FILE = "mydata.sqlite"
 
@@ -42,8 +66,8 @@ WORKING_FOLDERS = [
 create_missing_folders(WORKING_FOLDERS)
 connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
-
 create_data_structure(cursor)
+
 
 url_prefix = data_sources.average_temperature_prefix
 # Read and extract all data sources
@@ -61,30 +85,35 @@ for region, files in data_sources.source_files.items():
         with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
             zip_ref.extractall(DATASETS_FOLDER)
 
+def update_measurement_format(measurement):
+    try:
+        updated_measurement = float(measurement.replace(",", "."))
+    except ValueError:
+        updated_measurement = measurement
+    return updated_measurement
+
+
 # Read from CSV and insert into database
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
-    #print(f"Read file: {csv_file}")
+    print(f"Read file: {csv_file}")
+    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
+    cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         for row in csvreader:
-            #print(row)
+            # print(row)
             if len(row) < 4:
                 continue
-            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{row[3]}")')
+            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{update_measurement_format(row[3])}")')
 
 connection.commit()
 
 data = cursor.execute(f'SELECT * FROM temperatures;')
-#print(data.fetchall())
+# print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
 
-def years_select(cursor):
-    y = input("Select which year you would like to see temperatures from: ")
-    result = cursor.execute(f"""
-        SELECT * FROM temperatures
-        WHERE year LIKE {y}""")
-    print(result.fetchall())
-
-years_select(cursor)
+data = cursor.execute(f'SELECT * FROM meteostations;')
+for _id, meteostation_name, longtitude, latitude in data.fetchall():
+    print([longtitude, latitude])
