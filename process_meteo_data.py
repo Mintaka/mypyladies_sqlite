@@ -130,4 +130,20 @@ def get_daily_average_temperatures(cursor, date_from=None, date_to=None, meteost
     return daily_result
 
 #print(get_daily_average_temperatures(cursor, date_from = "1.1.1991", date_to = "1.1.1993"))
+def get_yearly_average_temperatures(cursor, year_from=None, year_to=None, meteostations=None, limit=None):
+    #make years ints
+    years = []
+    results = {}
+    count_years = year_from
+    for rok in range((year_to - year_from) + 1):
+        years.append(count_years)
+        count_years += 1
+    i = 0
+    for rok in years:
+        query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
+        WHERE year LIKE {years[i]}""")
+        results[f"{years[i]}"] = query.fetchall()
+        i += 1
+    return results
 
+print(get_yearly_average_temperatures(cursor, year_from = 1991, year_to = 1993))
