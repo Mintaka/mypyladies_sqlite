@@ -102,9 +102,16 @@ for csv_file in csv_files:
     cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
+        start_data_read = False
         for row in csvreader:
             # print(row)
+            if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
+                start_data_read = True
+                continue
+            if not start_data_read:
+                continue
             if len(row) < 4:
+                print("Bad row: ", repr(row))
                 continue
             # date format: YYYY-MM-DD
             date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
@@ -114,8 +121,8 @@ for csv_file in csv_files:
 
 connection.commit()
 
-data = cursor.execute(f'SELECT * FROM temperatures;')
-# print(data.fetchall())
+data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
+print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
 
