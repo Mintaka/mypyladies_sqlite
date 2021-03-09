@@ -98,10 +98,12 @@ def update_measurement_format(measurement):
 csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
 for csv_file in csv_files:
     print(f"Read file: {csv_file}")
+    location_entries = []
     meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
     cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
+        location_id = pathlib.Path(csv_file).stem
         start_data_read = False
         for row in csvreader:
             # print(row)
@@ -115,13 +117,17 @@ for csv_file in csv_files:
                 continue
             # date format: YYYY-MM-DD
             date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
-            cursor.execute(f"""INSERT INTO temperatures VALUES 
-                                 (null, "{date}", "{update_measurement_format(row[3])}")
-                            """)
+            # create tuple and a list of tuples for bulk insert
+            entry = tuple([location_id, date, update_measurement_format(row[3])])
+            location_entries.append(entry)
+
+        cursor.execute(f"""INSERT INTO temperatures VALUES 
+            ({location_entries})
+                           """)
 
 connection.commit()
 
-data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
+data = cursor.execute(f'SELECT * FROM temperatures LIMIT 500;')
 print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 print(data.fetchall())
