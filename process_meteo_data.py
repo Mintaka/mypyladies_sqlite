@@ -15,14 +15,7 @@ def create_missing_folders(folders):
 
 def create_data_structure(cursor):
     """Create tables for meteo data"""
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS temperatures (
-            id INTEGER PRIMARY KEY,
-            year int,
-            month int,
-            day int,
-            temperature real
-        );""")
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS meteostations (
             id INTEGER PRIMARY KEY,
@@ -30,6 +23,14 @@ def create_data_structure(cursor):
             longtitude real,
             latitutde real
         );""")
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS temperatures (
+            id INTEGER PRIMARY KEY,
+            date text,
+            temperature real
+        );""")
+
 
 def get_meteostation_metadata(filename):
     """ Get last record from metadata and return (name, longtitude, latitude)"""
@@ -105,7 +106,11 @@ for csv_file in csv_files:
             # print(row)
             if len(row) < 4:
                 continue
-            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{update_measurement_format(row[3])}")')
+            # date format: YYYY-MM-DD
+            date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
+            cursor.execute(f"""INSERT INTO temperatures VALUES 
+                                 (null, "{date}", "{update_measurement_format(row[3])}")
+                            """)
 
 connection.commit()
 
