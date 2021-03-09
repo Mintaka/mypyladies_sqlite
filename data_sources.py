@@ -19,11 +19,11 @@ source_files = {
                               "B2OLES01_T_N.csv.zip",
                              ],
                  "Stredocesky": [
+                              "P3BENS01_T_N.csv.zip",
+                              "P3CECH01_T_N.csv.zip",                   
                               "P3HULI01_T_N.csv.zip",
                               "P3NETV01_T_N.csv.zip",
                              ],
-
-
                  "Plzensky": [
                               "L1DOMA01_T_N.csv.zip",
                               "L1LIBK01_T_N.csv.zip",
