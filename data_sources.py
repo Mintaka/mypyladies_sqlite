@@ -5,6 +5,8 @@ source_files = {
                  "Jihocesky": [
                               "C2BYNO01_T_N.csv.zip",
                               "C2CBUD01_T_N.csv.zip",
+                              "C1PLAN01_T_N.csv",
+                              "C2HSTR01_T_N.csv",
                               ],
                  "Stredocesky": [
                               "P3HULI01_T_N.csv.zip",
