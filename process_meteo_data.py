@@ -55,24 +55,19 @@ def create_data_structure(cursor):
         );""")
 
 
-def extract_data_files(source_files,
-                       input_folder=DOWNLOAD_FOLDER,
-                       output_folder=DATASETS_FOLDER,
-                       url_prefix=data_sources.average_temperature_prefix):
-    for region, files in source_files.items():
-        for filename in files:
-            print(f"Proces data for region: {region} file: {filename}")
+def extract_data_file(filename, input_folder, output_folder):
+    # Extract
+    with zipfile.ZipFile(input_folder + '/' + filename,
+                         'r') as zip_ref:
+        zip_ref.extractall(output_folder)
 
-            # Download one data source
-            url = f"{url_prefix}/{region}/{filename}"
-            filename = pathlib.Path(url).name
-            r = requests.get(url, allow_redirects=True)
-            open(input_folder + '/' + filename, 'wb').write(r.content)
 
-            # Extract
-            with zipfile.ZipFile(input_folder + '/' + filename,
-                                 'r') as zip_ref:
-                zip_ref.extractall(output_folder)
+def download_data_file(filename, region, download_folder, url_prefix):
+    print(f"Proces data for region: {region} file: {filename}")
+    # Download one data source
+    url = f"{url_prefix}/{region}/{filename}"
+    r = requests.get(url, allow_redirects=True)
+    open(download_folder + '/' + filename, 'wb').write(r.content)
 
 
 def get_meteostation_metadata(filename):
@@ -87,7 +82,7 @@ def get_meteostation_metadata(filename):
                 in_metadata = True
             if in_metadata and line == "":
                 break
-            if in_metadata == True:
+            if in_metadata:
                 metadata.append(line)
     print(metadata)
     splited_line = metadata[-1].split(";")
@@ -102,43 +97,48 @@ def update_measurement_format(measurement):
     return updated_measurement
 
 
-def insert_csv2database(cursor, csv_folder=DATASETS_FOLDER):
-    csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
-    for csv_file in csv_files:
-        print(f"Read file: {csv_file}")
-        meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
-        cursor.execute(
+def insert_csv2db(csv_file, cursor, region=None):
+    print(f"Read file: {csv_file}")
+    meteostation_name, longtitude, latitude = get_meteostation_metadata(
+        csv_file)
+    cursor.execute(
             f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
-        with open(csv_file, encoding='cp1250') as csv_data:
-            csvreader = csv.reader(csv_data, delimiter=';')
-            start_data_read = False
-            for row in csvreader:
-                # print(row)
-                if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
-                    start_data_read = True
-                    continue
-                if not start_data_read:
-                    continue
-                if len(row) < 4:
-                    print("Bad row: ", repr(row))
-                    continue
-                # date format: YYYY-MM-DD
-                date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
-                cursor.execute(f"""INSERT INTO temperatures VALUES 
+    with open(csv_file, encoding='cp1250') as csv_data:
+        csvreader = csv.reader(csv_data, delimiter=';')
+        start_data_read = False
+        for row in csvreader:
+            # print(row)
+            if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
+                start_data_read = True
+                continue
+            if not start_data_read:
+                continue
+            if len(row) < 4:
+                print("Bad row: ", repr(row))
+                continue
+            # date format: YYYY-MM-DD
+            date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
+            cursor.execute(f"""INSERT INTO temperatures VALUES 
                                  (null, "{date}", "{update_measurement_format(row[3])}")
                             """)
 
 
-def fill_database():
-    create_missing_folders(WORKING_FOLDERS)
-    connection, cursor = setup_db_connection()
+def fill_database(connection, cursor):
     create_data_structure(cursor)
 
-    # Read and extract all data sources
-    extract_data_files(data_sources.source_files)
+    for region, files in data_sources.source_files.items():
+        for filename in files:
 
-    # Read from CSV and insert into database
-    insert_csv2database(cursor)
+            zipfilepath = DOWNLOAD_FOLDER + '/' + filename
+            if not os.path.exists(zipfilepath):
+                download_data_file(filename, region, DOWNLOAD_FOLDER,
+                                   data_sources.average_temperature_prefix)
+
+            csvfilepath = DATASETS_FOLDER + '/' + filename[:-4]
+            if not os.path.exists(csvfilepath):
+                extract_data_file(filename, DOWNLOAD_FOLDER, DATASETS_FOLDER)
+
+            insert_csv2db(csvfilepath, cursor, region=region)
 
     connection.commit()
 
@@ -156,7 +156,9 @@ def main(args):
     if args is None:
         arg = sys.argv
 
-    fill_database()
+    create_missing_folders(WORKING_FOLDERS)
+    connection, cursor = setup_db_connection()
+    fill_database(connection, cursor)
 
 
 if __name__ == '__main__':
