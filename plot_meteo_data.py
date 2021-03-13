@@ -2,15 +2,10 @@ from pathlib import Path
 import sqlite3
 
 from matplotlib import pyplot as plt
-import numpy as np
-# from matplotlib import pylab
 
-DATABASE_FILE = "mydata.sqlite"
-DATABASE_FOLDER = './.database/'
-EXPORTS_FOLDER = './.exports/'
+from process_meteo_data import setup_db_connection, EXPORTS_FOLDER
 
-connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
-cursor = connection.cursor()
+connection, cursor = setup_db_connection()
 
 data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;').fetchall()
 
@@ -18,5 +13,6 @@ _, date, temp = list(zip(*data))
 
 plt.plot(temp)
 
+plt.savefig(EXPORTS_FOLDER + '/' + "temp.png")
 
 plt.show()
