@@ -69,63 +69,64 @@ connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
 cursor = connection.cursor()
 create_data_structure(cursor)
 
+if __name__ == "__main__":
+    url_prefix = data_sources.average_temperature_prefix
+    # Read and extract all data sources
+    for region, files in data_sources.source_files.items():
+        for filename in files:
+            print(f"Proces data for region: {region} file: {filename}")
 
-url_prefix = data_sources.average_temperature_prefix
-# Read and extract all data sources
-for region, files in data_sources.source_files.items():
-    for filename in files:
-        print(f"Proces data for region: {region} file: {filename}")
+            # Download one data source
+            url = f"{url_prefix}/{region}/{filename}"
+            filename = pathlib.Path(url).name
+            r = requests.get(url, allow_redirects=True)
+            open(DOWNLOAD_FOLDER + '/' + filename, 'wb').write(r.content)
 
-        # Download one data source
-        url = f"{url_prefix}/{region}/{filename}"
-        filename = pathlib.Path(url).name
-        r = requests.get(url, allow_redirects=True)
-        open(DOWNLOAD_FOLDER + '/' + filename, 'wb').write(r.content)
+            # Extract
+            with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
+                zip_ref.extractall(DATASETS_FOLDER)
 
-        # Extract
-        with zipfile.ZipFile(DOWNLOAD_FOLDER + '/' + filename, 'r') as zip_ref:
-            zip_ref.extractall(DATASETS_FOLDER)
-
-def update_measurement_format(measurement):
-    try:
-        updated_measurement = float(measurement.replace(",", "."))
-    except ValueError:
-        updated_measurement = measurement
-    return updated_measurement
+    def update_measurement_format(measurement):
+        try:
+            updated_measurement = float(measurement.replace(",", "."))
+        except ValueError:
+            updated_measurement = measurement
+        return updated_measurement
 
 
-# Read from CSV and insert into database
-csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
-for csv_file in csv_files:
-    print(f"Read file: {csv_file}")
-    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
-    cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
-    with open(csv_file, encoding='cp1250') as csv_data:
-        csvreader = csv.reader(csv_data, delimiter=';')
-        start_data_read = False
-        for row in csvreader:
-            # print(row)
-            if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
-                start_data_read = True
-                continue
-            if not start_data_read:
-                continue
-            if len(row) < 4:
-                print("Bad row: ", repr(row))
-                continue
-            # date format: YYYY-MM-DD
-            date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
-            cursor.execute(f"""INSERT INTO temperatures VALUES 
-                                 (null, "{date}", "{update_measurement_format(row[3])}")
-                            """)
+    # Read from CSV and insert into database
+    csv_files = (list(pathlib.Path(DATASETS_FOLDER).glob('*.csv')))
+    for csv_file in csv_files:
+        print(f"Read file: {csv_file}")
+        meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
+        cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
+        with open(csv_file, encoding='cp1250') as csv_data:
+            csvreader = csv.reader(csv_data, delimiter=';')
+            start_data_read = False
+            for row in csvreader:
+                # print(row)
+                if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
+                    start_data_read = True
+                    continue
+                if not start_data_read:
+                    continue
+                if len(row) < 4:
+                    print("Bad row: ", repr(row))
+                    continue
+                # date format: YYYY-MM-DD
+                date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
+                cursor.execute(f"""INSERT INTO temperatures VALUES 
+                                    (null, "{date}", "{update_measurement_format(row[3])}")
+                                """)
 
-connection.commit()
+    connection.commit()
 
-data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
-print(data.fetchall())
-data = cursor.execute(f'SELECT count(*) FROM temperatures;')
-print(data.fetchall())
+    data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
+    print(data.fetchall())
+    data = cursor.execute(f'SELECT count(*) FROM temperatures;')
+    print(data.fetchall())
 
-data = cursor.execute(f'SELECT * FROM meteostations;')
-for _id, meteostation_name, longtitude, latitude in data.fetchall():
-    print([longtitude, latitude])
+    data = cursor.execute(f'SELECT * FROM meteostations;')
+    for _id, meteostation_name, longtitude, latitude in data.fetchall():
+        print([longtitude, latitude])
+
