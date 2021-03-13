@@ -15,14 +15,7 @@ def create_missing_folders(folders):
 
 def create_data_structure(cursor):
     """Create tables for meteo data"""
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS temperatures (
-            id INTEGER PRIMARY KEY,
-            year int,
-            month int,
-            day int,
-            temperature real
-        );""")
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS meteostations (
             id INTEGER PRIMARY KEY,
@@ -30,6 +23,14 @@ def create_data_structure(cursor):
             longtitude real,
             latitutde real
         );""")
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS temperatures (
+            id INTEGER PRIMARY KEY,
+            date text,
+            temperature real
+        );""")
+
 
 def get_meteostation_metadata(filename):
     """ Get last record from metadata and return (name, longtitude, latitude)"""
@@ -101,20 +102,30 @@ for csv_file in csv_files:
     cursor.execute(f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
+        start_data_read = False
         for row in csvreader:
             # print(row)
-            if len(row) < 4:
+            if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
+                start_data_read = True
                 continue
-            cursor.execute(f'INSERT INTO temperatures VALUES (null, "{row[0]}", "{row[1]}", "{row[2]}", "{update_measurement_format(row[3])}")')
+            if not start_data_read:
+                continue
+            if len(row) < 4:
+                print("Bad row: ", repr(row))
+                continue
+            # date format: YYYY-MM-DD
+            date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
+            cursor.execute(f"""INSERT INTO temperatures VALUES 
+                                 (null, "{date}", "{update_measurement_format(row[3])}")
+                            """)
 
 connection.commit()
 
-data = cursor.execute(f'SELECT * FROM temperatures;')
-# print(data.fetchall())
+data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
+print(data.fetchall())
 data = cursor.execute(f'SELECT count(*) FROM temperatures;')
-# print(data.fetchall())
+print(data.fetchall())
 
 data = cursor.execute(f'SELECT * FROM meteostations;')
 for _id, meteostation_name, longtitude, latitude in data.fetchall():
     print([longtitude, latitude])
-
