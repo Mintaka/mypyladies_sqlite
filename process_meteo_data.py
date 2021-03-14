@@ -33,6 +33,14 @@ def create_missing_folders(folders):
 def setup_db_connection(database_path=DATABASE_FOLDER + DATABASE_FILE):
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
+
+    # switch on foreign key ability and check it
+    cursor.execute("""PRAGMA foreign_keys = ON;""")
+    have_pragma = cursor.execute("""PRAGMA foreign_keys""").fetchone()[0]
+    if have_pragma != 1:
+        print('Foreign keys are not supported. Exit.')
+        sys.exit()
+
     return connection, cursor
 
 
@@ -42,18 +50,35 @@ def create_data_structure(cursor):
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS meteostations (
             id INTEGER PRIMARY KEY,
+            region text,
             name text,
             longtitude real,
             latitutde real
         );""")
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS temperatures (
+        CREATE TABLE IF NOT EXISTS datasources (
             id INTEGER PRIMARY KEY,
-            date text,
-            temperature real
+            meteostation_id INTEGER NOT NULL,
+            datasource_url text,
+            processed_datetime text,
+            FOREIGN KEY (meteostation_id)
+                REFERENCES meteostations(id)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE
         );""")
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS temperatures (
+            id INTEGER PRIMARY KEY,
+            meteostation_id INTEGER NOT NULL,
+            date text,
+            temperature real,
+            FOREIGN KEY (meteostation_id)
+                REFERENCES meteostations(id)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE
+        );""")
 
 def extract_data_file(filename, input_folder, output_folder):
     # Extract
@@ -76,7 +101,7 @@ def get_meteostation_metadata(filename):
         in_metadata = False
         metadata = []
         for line in _file.readlines():
-            print("&", line.strip())
+            # print("&", line.strip())
             line = line.strip()
             if line == "METADATA":
                 in_metadata = True
@@ -84,7 +109,7 @@ def get_meteostation_metadata(filename):
                 break
             if in_metadata:
                 metadata.append(line)
-    print(metadata)
+    # print(metadata)
     splited_line = metadata[-1].split(";")
     return splited_line[1], splited_line[-3].replace(",", "."), splited_line[-2].replace(",", ".")
 
@@ -97,12 +122,13 @@ def update_measurement_format(measurement):
     return updated_measurement
 
 
-def insert_csv2db(csv_file, cursor, region=None):
+def insert_csv2db(csv_file, cursor, region, datasource_url):
     print(f"Read file: {csv_file}")
     meteostation_name, longtitude, latitude = get_meteostation_metadata(
         csv_file)
     cursor.execute(
-            f'INSERT INTO meteostations VALUES (null, "{meteostation_name}", "{longtitude}", "{latitude}")')
+            f'INSERT INTO meteostations VALUES (null, "{region}", "{meteostation_name}", "{longtitude}", "{latitude}")')
+    meteostation_id = cursor.lastrowid
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         start_data_read = False
@@ -118,8 +144,12 @@ def insert_csv2db(csv_file, cursor, region=None):
                 continue
             # date format: YYYY-MM-DD
             date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
+            measured_temperature = update_measurement_format(row[3])
+            if measured_temperature == "":
+                print(f"Measured temperature failed at: {meteostation_name}, date: {date} value: ->{measured_temperature}<-")
+                continue
             cursor.execute(f"""INSERT INTO temperatures VALUES 
-                                 (null, "{date}", "{update_measurement_format(row[3])}")
+                                 (null, {meteostation_id}, "{date}", {update_measurement_format(row[3])} )
                             """)
 
 
@@ -138,7 +168,8 @@ def fill_database(connection, cursor):
             if not os.path.exists(csvfilepath):
                 extract_data_file(filename, DOWNLOAD_FOLDER, DATASETS_FOLDER)
 
-            insert_csv2db(csvfilepath, cursor, region=region)
+            datasource_url = f"{data_sources.average_temperature_prefix}/{region}/{filename}"
+            insert_csv2db(csvfilepath, cursor, region=region, datasource_url=datasource_url)
 
     connection.commit()
 
