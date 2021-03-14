@@ -1,5 +1,6 @@
 import os
 import sys
+import datetime
 import requests
 import zipfile
 import pathlib
@@ -124,11 +125,17 @@ def update_measurement_format(measurement):
 
 def insert_csv2db(csv_file, cursor, region, datasource_url):
     print(f"Read file: {csv_file}")
-    meteostation_name, longtitude, latitude = get_meteostation_metadata(
-        csv_file)
+    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
+
     cursor.execute(
             f'INSERT INTO meteostations VALUES (null, "{region}", "{meteostation_name}", "{longtitude}", "{latitude}")')
+
     meteostation_id = cursor.lastrowid
+
+    act_datetime = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute(
+        f'INSERT INTO datasources VALUES (null, "{meteostation_id}", "{datasource_url}", "{act_datetime}")')
+
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         start_data_read = False
@@ -156,8 +163,17 @@ def insert_csv2db(csv_file, cursor, region, datasource_url):
 def fill_database(connection, cursor):
     create_data_structure(cursor)
 
+    # fetchall return in format [(url1), (url2), ... ] also it need to be converted to simle list [url1, url2, ...]
+    data = cursor.execute("SELECT datasource_url from datasources;").fetchall()
+    processed_sources = [url[0] for url in data]
+
     for region, files in data_sources.source_files.items():
         for filename in files:
+
+            datasource_url = f"{data_sources.average_temperature_prefix}/{region}/{filename}"
+            if datasource_url in processed_sources:
+                print(f"Done before: {datasource_url}")
+                continue
 
             zipfilepath = DOWNLOAD_FOLDER + '/' + filename
             if not os.path.exists(zipfilepath):
@@ -168,7 +184,7 @@ def fill_database(connection, cursor):
             if not os.path.exists(csvfilepath):
                 extract_data_file(filename, DOWNLOAD_FOLDER, DATASETS_FOLDER)
 
-            datasource_url = f"{data_sources.average_temperature_prefix}/{region}/{filename}"
+
             insert_csv2db(csvfilepath, cursor, region=region, datasource_url=datasource_url)
 
     connection.commit()
