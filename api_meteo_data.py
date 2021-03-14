@@ -2,29 +2,16 @@ import data_sources
 import process_meteo_data
 import sqlite3
 import pathlib
+from process_meteo_data import setup_db_connection
 
-DATABASE_FILE = "mydata.sqlite"
 
-DATABASE_FOLDER = './.database/'
-DOWNLOAD_FOLDER = './.download/'
-DATASETS_FOLDER = './.datasets/'
-EXPORTS_FOLDER = './.exports/'
-
-WORKING_FOLDERS = [
-                    DATABASE_FOLDER,
-                    DOWNLOAD_FOLDER,
-                    DATASETS_FOLDER,
-                    EXPORTS_FOLDER,
-                  ]
-
-connection = sqlite3.connect(DATABASE_FOLDER + DATABASE_FILE)
-cursor = connection.cursor()
 
 #date: YYYY-MM-DD
 def get_daily_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
     daily = cursor.execute(f"""SELECT * FROM temperatures
                                 WHERE date BETWEEN '{date_from}' AND '{date_to}';""")
     daily_result = daily.fetchall()
+    #bez ID (option True/False)
     return daily_result
 
 def get_yearly_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
@@ -49,3 +36,7 @@ def get_yearly_average_temperatures(cursor, date_from=None, date_to=None, meteos
     return results
 
 #print(get_yearly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1999-06-30"))
+
+if __name__ == '__main__':
+    connection, cursor = setup_db_connection()
+    pass
