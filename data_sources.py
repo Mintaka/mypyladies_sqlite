@@ -45,4 +45,8 @@ source_files = {
                               "H3SVOD01_T_N.csv.zip",
                               "H3NBYD01_T_N.csv.zip",
                               ],
+                 "Olomoucky": [
+                              "O7BEAD01_T_N.csv.zip",
+                              "O7CERS01_T_N.csv.zip",
+                              ],
                }
