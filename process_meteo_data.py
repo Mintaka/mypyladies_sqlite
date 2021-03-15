@@ -122,24 +122,14 @@ def update_measurement_format(measurement):
         updated_measurement = measurement
     return updated_measurement
 
-
-def insert_csv2db(csv_file, cursor, region, datasource_url):
-    print(f"Read file: {csv_file}")
-    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
-
-    cursor.execute(
-            f'INSERT INTO meteostations VALUES (null, "{region}", "{meteostation_name}", "{longtitude}", "{latitude}")')
-
-    meteostation_id = cursor.lastrowid
-
-    act_datetime = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-    cursor.execute(
-        f'INSERT INTO datasources VALUES (null, "{meteostation_id}", "{datasource_url}", "{act_datetime}")')
-
+def create_list_for_bulk(csv_file):
+    location_entries = []
+    location_id = pathlib.Path(csv_file).stem
+    
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         start_data_read = False
-        for row in csvreader:
+        for i,row in enumerate(csvreader):
             # print(row)
             if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
                 start_data_read = True
@@ -155,10 +145,25 @@ def insert_csv2db(csv_file, cursor, region, datasource_url):
             if measured_temperature == "":
                 print(f"Measured temperature failed at: {meteostation_name}, date: {date} value: ->{measured_temperature}<-")
                 continue
-            cursor.execute(f"""INSERT INTO temperatures VALUES 
-                                 (null, {meteostation_id}, "{date}", {update_measurement_format(row[3])} )
-                            """)
+            entry = tuple([i,location_id, date, update_measurement_format(row[3])])
+            location_entries.append(entry)
+        return location_entries
 
+def insert_csv2db(csv_file, cursor, region, datasource_url,location_entries):
+    print(f"Read file: {csv_file}")
+    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
+
+    cursor.execute(
+            f'INSERT INTO meteostations VALUES (null, "{region}", "{meteostation_name}", "{longtitude}", "{latitude}")')
+
+    meteostation_id = cursor.lastrowid
+
+    act_datetime = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute(
+        f'INSERT INTO datasources VALUES (null, "{meteostation_id}", "{datasource_url}", "{act_datetime}")')
+
+    cursor.execute(f"INSERT INTO temperatures VALUES ({location_entries})")
+                                  
 
 def fill_database(connection, cursor):
     create_data_structure(cursor)
@@ -184,13 +189,13 @@ def fill_database(connection, cursor):
             if not os.path.exists(csvfilepath):
                 extract_data_file(filename, DOWNLOAD_FOLDER, DATASETS_FOLDER)
 
-
-            insert_csv2db(csvfilepath, cursor, region=region, datasource_url=datasource_url)
+            data_to_sql = create_list_for_bulk(csvfilepath)
+            insert_csv2db(csvfilepath, cursor, region=region, datasource_url=datasource_url,location_entries = data_to_sql)
 
     connection.commit()
 
-# data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
-# print(data.fetchall())
+#data = cursor.execute(f'SELECT * FROM temperatures LIMIT 100;')
+#print(data.fetchall())
 # data = cursor.execute(f'SELECT count(*) FROM temperatures;')
 # print(data.fetchall())
 #
@@ -210,3 +215,4 @@ def main(args):
 
 if __name__ == '__main__':
     main(None)
+
