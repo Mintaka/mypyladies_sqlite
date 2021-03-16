@@ -122,14 +122,13 @@ def update_measurement_format(measurement):
         updated_measurement = measurement
     return updated_measurement
 
-def create_list_for_bulk(csv_file):
+def create_list_for_bulk(location_id, csv_file):
     location_entries = []
-    location_id = pathlib.Path(csv_file).stem
-    
+
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
         start_data_read = False
-        for i,row in enumerate(csvreader):
+        for row in csvreader:
             # print(row)
             if ";".join(row).startswith("Rok;Měsíc;Den;Hodnota;Příznak"):
                 start_data_read = True
@@ -145,11 +144,11 @@ def create_list_for_bulk(csv_file):
             if measured_temperature == "":
                 print(f"Measured temperature failed at: {meteostation_name}, date: {date} value: ->{measured_temperature}<-")
                 continue
-            entry = tuple([i,location_id, date, update_measurement_format(row[3])])
+            entry = tuple([location_id, date, update_measurement_format(row[3])])
             location_entries.append(entry)
         return location_entries
 
-def insert_csv2db(csv_file, cursor, region, datasource_url,location_entries):
+def insert_csv2db(csv_file, cursor, region, datasource_url):
     print(f"Read file: {csv_file}")
     meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
 
@@ -162,8 +161,8 @@ def insert_csv2db(csv_file, cursor, region, datasource_url,location_entries):
     cursor.execute(
         f'INSERT INTO datasources VALUES (null, "{meteostation_id}", "{datasource_url}", "{act_datetime}")')
 
-    cursor.execute(f"INSERT INTO temperatures VALUES ({location_entries})")
-                                  
+    data_to_sql = create_list_for_bulk(meteostation_id, csv_file)
+    cursor.execute(f"INSERT INTO temperatures (meteostation_id, date, temperature) VALUES ({data_to_sql})")
 
 def fill_database(connection, cursor):
     create_data_structure(cursor)
@@ -174,6 +173,7 @@ def fill_database(connection, cursor):
 
     for region, files in data_sources.source_files.items():
         for filename in files:
+            print("-@-"*15, region, filename )
 
             datasource_url = f"{data_sources.average_temperature_prefix}/{region}/{filename}"
             if datasource_url in processed_sources:
@@ -189,8 +189,7 @@ def fill_database(connection, cursor):
             if not os.path.exists(csvfilepath):
                 extract_data_file(filename, DOWNLOAD_FOLDER, DATASETS_FOLDER)
 
-            data_to_sql = create_list_for_bulk(csvfilepath)
-            insert_csv2db(csvfilepath, cursor, region=region, datasource_url=datasource_url,location_entries = data_to_sql)
+            insert_csv2db(csvfilepath, cursor, region=region, datasource_url=datasource_url)
 
     connection.commit()
 
