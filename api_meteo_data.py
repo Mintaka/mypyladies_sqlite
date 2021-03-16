@@ -81,12 +81,12 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         year_actuall += 1
 
     for k,v in year_month.items():
-        for i,j in v.items(): 
+        results_month = {}
+        for i in v.keys(): 
             query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
                                     WHERE date LIKE '{k}-%{i}%'""")
             avg_temp = str(query.fetchall())
             results_month [i] = avg_temp[2:7]
-
         results [k] = results_month
     return results
             
