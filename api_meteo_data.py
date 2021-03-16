@@ -51,7 +51,7 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         if date_from_y == date_to_y:
            months = {}
            count_months = date_from_m
-           for month in range(date_to_m,date_to_m + 1):
+           for month in range(date_from_m,date_to_m + 1):
                months [month] = "NaN"
                count_months += 1
            year_month [year_actuall] = months 
