@@ -1,3 +1,8 @@
+#!python
+# -*- coding: utf-8 -*-
+
+__author__ = "Tomas Zitka"
+__email__ = "tozitka@gmail.com"
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -5,7 +10,17 @@ from process_meteo_data import setup_db_connection, EXPORTS_FOLDER
 
 
 
-def plot_temp_by_meteostation(cursor, meteostation_id, start=1970, end=1980):
+def plot_temp_by_meteostation(cursor, meteostation_id,
+                              start: int = 1970,
+                              end: int = 1980):
+    """
+    Plots temperature measured at station with meteostastion_id
+    as time series for each year, colors years in ascending colors.
+    Saves the plot into EXPORTS_FOLDER + '/' + f"temp_{name}_meteostation.png"
+
+    :param cursor: cursor to database
+    """
+
     name = cursor.execute(f'SELECT name FROM meteostations '
                           f'WHERE id == {meteostation_id};').fetchone()[0]
 
@@ -29,7 +44,11 @@ def plot_temp_by_meteostation(cursor, meteostation_id, start=1970, end=1980):
     plt.savefig(EXPORTS_FOLDER + '/' + f"temp_{name}_meteostation.png")
 
 
-def plot_temp_by_year(cursor, year):
+def plot_temp_by_year(cursor, year=1989):
+    """
+    Plots data from given year for all available meteostations.
+    Saves result into EXPORTS_FOLDER + '/' + f"temp_{year}_meteostations.png"
+    """
     for meteostation_id in range(1, 26):
         data = cursor.execute(f'SELECT * FROM temperatures '
                               f'WHERE meteostation_id == {meteostation_id} '
