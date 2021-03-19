@@ -89,7 +89,21 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
             results_month [i] = avg_temp[2:7]
         results [k] = results_month
     return results
-            
+
+  ### Rozpracovane
+def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
+    daily = cursor.execute(f"""SELECT date,temperature FROM temperatures
+                                WHERE date BETWEEN '{date_from}' AND '{date_to}';""")
+    daily_result = daily.fetchall()
+    date = [result [0] for result in daily_result]
+    temp = [result [1] for result in daily_result]
+
+
+    date_split = [tuple(map(int, item.split('-'))) for item in date]
+    date_temp = [date_split, temp]
+    print(date_temp)    
+        
+    return date_temp          
 
 if __name__ == '__main__':
     connection, cursor = setup_db_connection()
