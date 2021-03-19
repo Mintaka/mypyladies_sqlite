@@ -8,9 +8,16 @@ from process_meteo_data import setup_db_connection
 
 #date: YYYY-MM-DD
 def get_daily_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
-    daily = cursor.execute(f"""SELECT date,temperature FROM temperatures
-                                WHERE date BETWEEN '{date_from}' AND '{date_to}';""")
-    daily_result = daily.fetchall()
+    #if meteostation is not specified takes data from all
+    if meteostations == None:
+        daily = cursor.execute(f"""SELECT date,temperature FROM temperatures
+                                    WHERE date BETWEEN '{date_from}' AND '{date_to}';""")
+        daily_result = daily.fetchall()
+    else:
+        daily = cursor.execute(f"""SELECT meteostation_id,date,temperature FROM temperatures
+                                    WHERE date BETWEEN '{date_from}' AND '{date_to}'
+                                    AND meteostation_id = {meteostations};""")
+        daily_result = daily.fetchall()
     return daily_result
 
 def get_yearly_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
@@ -107,6 +114,7 @@ def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteos
 
 if __name__ == '__main__':
     connection, cursor = setup_db_connection()
+    print(get_daily_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1996-06-30"))
     # print(get_yearly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1999-06-30"))
     # print(get_monthly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1995-07-30"))
     pass
