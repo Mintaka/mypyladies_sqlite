@@ -144,7 +144,7 @@ def create_list_for_bulk(location_id, csv_file):
             if measured_temperature == "":
                 #print(f"Measured temperature failed at: {meteostation_name}, date: {date} value: ->{measured_temperature}<-")
                 continue
-            entry = tuple([location_id, date, update_measurement_format(row[3])])
+            entry = location_id, date, update_measurement_format(row[3])
             location_entries.append(entry)
         return location_entries
 
