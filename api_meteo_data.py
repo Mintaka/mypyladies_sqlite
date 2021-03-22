@@ -5,10 +5,11 @@ import pathlib
 from process_meteo_data import setup_db_connection
 
 
-
-#date: YYYY-MM-DD
 def get_daily_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
-    #if meteostation is not specified takes data from all
+    """
+    This function takes starting date,end date in format YYYY-MM-DD and meteostation ID and returns daily average temperatures in that particular station between selected dates.
+    If meteostation is not specified returns data from all of them.
+    """
     if meteostations == None:
         daily = cursor.execute(f"""SELECT date,temperature FROM temperatures
                                     WHERE date BETWEEN '{date_from}' AND '{date_to}';""")
@@ -21,6 +22,11 @@ def get_daily_average_temperatures(cursor, date_from=None, date_to=None, meteost
     return daily_result
 
 def get_yearly_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
+    """    
+    This function takes starting date,end date (in format YYYY-MM-DD) and meteostation ID and returns yearly average temperatures in that particular station between selected dates.
+    If meteostation is not specified returns data from all of them.
+    Returned is dictionary {"year": average_temp}
+    """
     #filter only years and make them int
     date_from_y = int(list(date_from.split("-"))[0])
     date_to_y = int(list(date_to.split("-"))[0])
@@ -28,18 +34,29 @@ def get_yearly_average_temperatures(cursor, date_from=None, date_to=None, meteos
     years = []
     results = {}
     count_years = date_from_y
+
     for rok in range((date_to_y - date_from_y) + 1): #create list called "years" which consist of range of years from selected dates (eg 1995-05-4 and 1998-04-09 creates years[1995, 1996, 1997, 1998])
         years.append(count_years)
         count_years += 1
 
-    i = 0
-    for rok in years:
-        query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
-        WHERE date LIKE '{years[i]}%'""")
-        avg_temp = str(query.fetchall())
-        results[f"{years[i]}"] = avg_temp[2:5] #for every year get average temperature and put it into the dictionary as string
-        i += 1
+    if meteostations == None:
+        for rok in range(0, len(years)):
+            query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
+            WHERE date LIKE '{years[rok]}%'""")
+            avg_temp = query.fetchall()
+            results[years[rok]] = float("%0.2f"%avg_temp[0][0])
+    else:
+        try:
+            for rok in range(0, len(years)):
+                query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
+                WHERE date LIKE '{years[rok]}%'
+                AND meteostation_id = {meteostations};""")
+                avg_temp = query.fetchall()
+                results[years[rok]] = float("%0.2f"%avg_temp[0][0])
+        except TypeError:
+            print("Limited data for this meteostation in selected time frame!")
     return results
+
 
 def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
     date_from_y = int(list(date_from.split("-"))[0])
@@ -114,7 +131,8 @@ def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteos
 
 if __name__ == '__main__':
     connection, cursor = setup_db_connection()
-    print(get_daily_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1996-06-30"))
-    # print(get_yearly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1999-06-30"))
-    # print(get_monthly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1995-07-30"))
+    #print(get_daily_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1996-06-30"))
+    #print(get_yearly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1999-06-30", meteostations = 5))
+    #print(get_monthly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1995-07-30"))
+    #print(get_weekly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1995-06-15"))
     pass
