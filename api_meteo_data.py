@@ -31,30 +31,25 @@ def get_yearly_average_temperatures(cursor, date_from=None, date_to=None, meteos
     date_from_y = int(list(date_from.split("-"))[0])
     date_to_y = int(list(date_to.split("-"))[0])
 
-    years = []
     results = {}
-    count_years = date_from_y
-
-    for rok in range((date_to_y - date_from_y) + 1): #create list called "years" which consist of range of years from selected dates (eg 1995-05-4 and 1998-04-09 creates years[1995, 1996, 1997, 1998])
-        years.append(count_years)
-        count_years += 1
-
+    
     if meteostations == None:
-        for rok in range(0, len(years)):
+        for rok in range(date_from_y, date_to_y+1):
             query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
-            WHERE date LIKE '{years[rok]}%'""")
+            WHERE date LIKE '{rok}%'""")
             avg_temp = query.fetchall()
-            results[years[rok]] = float("%0.2f"%avg_temp[0][0])
+            results[rok] = float(avg_temp[0][0])
     else:
         try:
-            for rok in range(0, len(years)):
+            for rok in range(date_from_y, date_to_y+1):
                 query = cursor.execute(f"""SELECT Avg(temperature) FROM temperatures
-                WHERE date LIKE '{years[rok]}%'
+                WHERE date LIKE '{rok}%'
                 AND meteostation_id = {meteostations};""")
                 avg_temp = query.fetchall()
-                results[years[rok]] = float("%0.2f"%avg_temp[0][0])
+                results[rok] = float(avg_temp[0][0])
         except TypeError:
             print("Limited data for this meteostation in selected time frame!")
+
     return results
 
 
@@ -132,7 +127,7 @@ def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteos
 if __name__ == '__main__':
     connection, cursor = setup_db_connection()
     #print(get_daily_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1996-06-30"))
-    #print(get_yearly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1999-06-30", meteostations = 5))
+    #print(get_yearly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1999-06-30", meteostations=1))
     #print(get_monthly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1995-07-30"))
     #print(get_weekly_average_temperatures(cursor, date_from = "1995-05-15", date_to = "1995-06-15"))
     pass
