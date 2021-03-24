@@ -109,20 +109,40 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         results [k] = results_month
     return results
 
-  ### Rozpracovane
-def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations=None, limit=None):
-    daily = cursor.execute(f"""SELECT date,temperature FROM temperatures
-                                WHERE date BETWEEN '{date_from}' AND '{date_to}';""")
+
+### Rozpracovane
+def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations = 1, limit=None):
+    import datetime
+    daily = cursor.execute(f"""SELECT meteostation_id,date,temperature FROM temperatures
+                                    WHERE date BETWEEN '{date_from}' AND '{date_to}'
+                                    AND meteostation_id = {meteostations};""")
+    
     daily_result = daily.fetchall()
-    date = [result [0] for result in daily_result]
-    temp = [result [1] for result in daily_result]
+    result_weekly = []
+
+    for m_id, date, temp  in daily_result:
+        date_reformat = datetime.datetime.strptime(date,"%Y-%m-%d")
+        n_week = date_reformat.strftime("%U")
+        n_y = date_reformat.strftime("%Y")
+        result_weekly.append((n_y,n_week, temp ))
+    
+    import itertools
+    
+    l = result_weekly
+    key_f = lambda x: x[1]
+    week_group = []
+    
+    for key, group in itertools.groupby(l, key_f):
+         y = list(group)
+         week_group.append(y)
+    # print(week_group[0])
+    # print(week_group[1])
+    # print(week_group[2])
+    
+    # print(len(week_group))
 
 
-    date_split = [tuple(map(int, item.split('-'))) for item in date]
-    date_temp = [date_split, temp]
-    print(date_temp)    
-        
-    return date_temp          
+    # return date_temp       
 
 if __name__ == '__main__':
     connection, cursor = setup_db_connection()
