@@ -110,35 +110,50 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
     return results
 
 
-### Rozpracovane
+### In progress
+   def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations = 1, limit=None):
+    import datetime
+    from itertools import groupby
+    
+    # Database Query
+    daily = cursor.execute(f"""SELECT meteostation_id,date,temperature FROM temperatures
+                                    WHERE date BETWEEN '{date_from}' AND '{date_to}'
+                                    AND meteostation_id = {meteostations};""")
+    daily_result = daily.fetchall()
+    
+    # Initialization lists
+    date_weekly = []
+    week_group = []
+    temp_av = [] 
+    result = []
+
+    # Convert to date time format with week numbers
     for m_id, date, temp  in daily_result:
         date_reformat = datetime.datetime.strptime(date,"%Y-%m-%d")
         n_week = date_reformat.strftime("%W")
-        n_y = date_reformat.strftime("%Y")
-        result_weekly.append((n_y,n_week, temp ))
-    
-    import itertools
-    
-    l = result_weekly
-    key_f = lambda x: x[1]
-    week_group = []
-    
-    for key, group in itertools.groupby(l, key_f):
-         y = list(group)
-         week_group.append(y)
+        n_year = date_reformat.strftime("%Y")
         
-    temp_av = [] 
-    result = {}
-
+        date_weekly.append((n_year,n_week, temp))
+        
+     # Group data by weeks
+    for key_week, group_funtion in groupby(date_weekly, lambda x: x[1]):
+         week = list(group_funtion)
+         week_group.append(week)
+         
+    # Calculate average temp for each week and add it to list     
     for item in week_group:
         t_sum = 0
         length = 0
-        temp_av = []
         
-        for value in item:
-            t_sum = t_sum + value[2]
+        for temp in item:
+            t_sum = t_sum + temp[2]
             length += 1
-        temp_av.append((int(value[1]), t_sum/length))
+        temp_av.append((item[0][0],int(temp[1]), t_sum/length))
+        
+    # Group data by years 
+    for key_year, group_funtion in groupby(temp_av, lambda x: x[0]):
+     year_group = list(group_funtion)
+     result.append(year_group)
 
 
 if __name__ == '__main__':
