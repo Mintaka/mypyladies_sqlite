@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Meteostation {{ meteost.name }}</h1>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Temperature</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for md in meteost_data %}
+        <tr>
+            <td>{{ md.id }}</td>
+            <td>{{ md.date }}</td>
+            <td>{{ md.temperature }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+
+{% endblock %}
