@@ -4,6 +4,31 @@
 <body>
 <p>User: {{ user }}</p>
 <h1>Meteorologické stanice</h1>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Region</th>
+            <th>Name</th>
+            <th>Longtitude</th>
+            <th>Latitude</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for m in meteost_all %}
+        <tr>
+            <td>{{ m.id }}</td>
+            <td>{{ m.region }}</td>
+            <td>{{ m.name }}</td>
+            <td>{{ m.longtitude }}</td>
+            <td>{{ m.latitutde }}</td>
+        </tr>
+
+        {% endfor %}
+    </table>
+</div>
 
 </body>
 {% endblock %}
