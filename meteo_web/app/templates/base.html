@@ -1,24 +1,12 @@
 <html>
 <head>
-<style>
-body {
-    margin: 0;
-    padding: 50px;
-    font: 18px/1.5 sans-serif;
-    background-color: white;
-    color: black;
-}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="/assets/css/main.css"/>
+    <noscript>
+        <link rel="stylesheet" href="/assets/css/noscript.css"/>
+    </noscript>
 
-h1 {
-    font-family: "Montserrat", serif;
-    font-size: 36px;
-}
-
-table, th, td {
-  border: 1px solid black;
-  background-color: cyan;
-}
-</style>
 
     {% if title %}
     <title>{{ title }}</title>
@@ -27,7 +15,12 @@ table, th, td {
     {% endif %}
 </head>
 <body>
-<h1>Pyladies - webová aplikace</h1>
-{% block content %}{% endblock %}
+<div id="main" class="wrapper style1">
+    <div class="container">
+        <h3>Pyladies - webová aplikace</h3>
+        {% block content %}{% endblock %}
+
+    </div>
+</div>
 </body>
 </html>

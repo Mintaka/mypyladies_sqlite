@@ -1,0 +1,12 @@
+.error {
+    color: red
+}
+
+mark {
+            background-color: yellow;
+            color: red;
+         }
+
+wrap_terms {
+    white-space:pre-wrap;
+}

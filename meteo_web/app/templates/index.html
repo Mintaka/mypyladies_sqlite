@@ -3,32 +3,34 @@
 {% block content %}
 <body>
 
-<h1>Meteorologické stanice</h1>
-<div>
-    <table>
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Region</th>
-            <th>Name</th>
-            <th>Longtitude</th>
-            <th>Latitude</th>
-        </tr>
-        </thead>
-        <tbody>
+        <h4>Meteorologické stanice</h4>
+        <section>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Region</th>
+                        <th>Name</th>
+                        <th>Longtitude</th>
+                        <th>Latitude</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-        {% for m in meteost_all %}
-        <tr>
-            <td>{{ m.id }}</td>
-            <td>{{ m.region }}</td>
-            <td><a href="{{url_for('meteostation',  meteo_id=m.id)}}">{{ m.name }}</a></td>
-            <td>{{ m.longtitude }}</td>
-            <td>{{ m.latitutde }}</td>
-        </tr>
+                    {% for m in meteost_all %}
+                    <tr>
+                        <td>{{ m.id }}</td>
+                        <td>{{ m.region }}</td>
+                        <td><a href="{{url_for('meteostation',  meteo_id=m.id)}}">{{ m.name }}</a></td>
+                        <td>{{ m.longtitude }}</td>
+                        <td>{{ m.latitutde }}</td>
+                    </tr>
 
-        {% endfor %}
-    </table>
-</div>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
 
 </body>
 {% endblock %}
