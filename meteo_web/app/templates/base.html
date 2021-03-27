@@ -1,0 +1,13 @@
+<html>
+<head>
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Meteo aplikace</title>
+    {% endif %}
+</head>
+<body>
+<h1>Pyladies - webová aplikace</h1>
+{% block content %}{% endblock %}
+</body>
+</html>

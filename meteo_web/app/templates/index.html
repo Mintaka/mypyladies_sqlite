@@ -1,14 +1,9 @@
-<html>
-<head>
-     {% if title %}
-     <title>{{ title }}</title>
-     {% else %}
-     <title>Meteo aplikace</title>
-     {% endif %}
-</head>
+{% extends "base.html" %}
+
+{% block content %}
 <body>
 <p>User: {{ user }}</p>
 <h1>Meteorologické stanice</h1>
 
 </body>
-</html>
+{% endblock %}
