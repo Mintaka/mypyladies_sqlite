@@ -1,9 +1,13 @@
 <html>
 <head>
+     {% if title %}
+     <title>{{ title }}</title>
+     {% else %}
      <title>Meteo aplikace</title>
+     {% endif %}
 </head>
 <body>
-
+<p>User: {{ user }}</p>
 <h1>Meteorologické stanice</h1>
 
 </body>
