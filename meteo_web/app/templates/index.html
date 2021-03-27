@@ -21,7 +21,7 @@
         <tr>
             <td>{{ m.id }}</td>
             <td>{{ m.region }}</td>
-            <td>{{ m.name }}</td>
+            <td><a href="{{url_for('meteostation',  meteo_id=m.id)}}">{{ m.name }}</a></td>
             <td>{{ m.longtitude }}</td>
             <td>{{ m.latitutde }}</td>
         </tr>
