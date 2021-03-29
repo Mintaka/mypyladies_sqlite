@@ -109,9 +109,7 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         results [k] = results_month
     return results
 
-
-### In progress
-   def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations = 1, limit=None):
+def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations = None , limit=None):
     import datetime
     from itertools import groupby
     
@@ -119,13 +117,14 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
     daily = cursor.execute(f"""SELECT meteostation_id,date,temperature FROM temperatures
                                     WHERE date BETWEEN '{date_from}' AND '{date_to}'
                                     AND meteostation_id = {meteostations};""")
+    
     daily_result = daily.fetchall()
     
-    # Initialization lists
+    # Initialization variables
     date_weekly = []
     week_group = []
     temp_av = [] 
-    result = []
+    year_results = {}
 
     # Convert to date time format with week numbers
     for m_id, date, temp  in daily_result:
@@ -134,12 +133,12 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         n_year = date_reformat.strftime("%Y")
         
         date_weekly.append((n_year,n_week, temp))
-        
+      
      # Group data by weeks
-    for key_week, group_funtion in groupby(date_weekly, lambda x: x[1]):
-         week = list(group_funtion)
+    for key_week, group in groupby(date_weekly, lambda x: x[1]):
+         week = list(group)
          week_group.append(week)
-         
+    
     # Calculate average temp for each week and add it to list     
     for item in week_group:
         t_sum = 0
@@ -151,9 +150,20 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         temp_av.append((item[0][0],int(temp[1]), t_sum/length))
         
     # Group data by years 
-    for key_year, group_funtion in groupby(temp_av, lambda x: x[0]):
-     year_group = list(group_funtion)
-     result.append(year_group)
+    year_results = {}
+
+    x = {}
+    for year_key, group in groupby(temp_av, lambda x: x[0]):
+        y = list(group)
+        year_results.update({year_key: y})
+    
+    # Create dicionary of results 
+    for key in year_results.keys():
+            week_results = {}
+            for week_key, group in groupby(year_results [key], lambda x: x[1]):
+                y = list(group)
+                week_results.update({week_key: y[0][2]})
+            x [key] = week_results
 
 
 if __name__ == '__main__':
