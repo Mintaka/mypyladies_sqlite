@@ -122,19 +122,8 @@ def update_measurement_format(measurement):
         updated_measurement = measurement
     return updated_measurement
 
-
-def insert_csv2db(csv_file, cursor, region, datasource_url):
-    print(f"Read file: {csv_file}")
-    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
-
-    cursor.execute(
-            f'INSERT INTO meteostations VALUES (null, "{region}", "{meteostation_name}", "{longtitude}", "{latitude}")')
-
-    meteostation_id = cursor.lastrowid
-
-    act_datetime = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-    cursor.execute(
-        f'INSERT INTO datasources VALUES (null, "{meteostation_id}", "{datasource_url}", "{act_datetime}")')
+def create_list_for_bulk(location_id, csv_file):
+    location_entries = []
 
     with open(csv_file, encoding='cp1250') as csv_data:
         csvreader = csv.reader(csv_data, delimiter=';')
@@ -153,12 +142,29 @@ def insert_csv2db(csv_file, cursor, region, datasource_url):
             date = f"{row[0]}-{row[1]}-{row[2].zfill(2)}"
             measured_temperature = update_measurement_format(row[3])
             if measured_temperature == "":
-                print(f"Measured temperature failed at: {meteostation_name}, date: {date} value: ->{measured_temperature}<-")
+                #print(f"Measured temperature failed at: {meteostation_name}, date: {date} value: ->{measured_temperature}<-")
                 continue
-            cursor.execute(f"""INSERT INTO temperatures VALUES 
-                                 (null, {meteostation_id}, "{date}", {update_measurement_format(row[3])} )
-                            """)
+            entry = location_id, date, update_measurement_format(row[3])
+            location_entries.append(entry)
+        return location_entries
 
+
+def insert_csv2db(csv_file, cursor, region, datasource_url):
+    print(f"Read file: {csv_file}")
+    meteostation_name, longtitude, latitude = get_meteostation_metadata(csv_file)
+
+    cursor.execute(
+            f'INSERT INTO meteostations VALUES (null, "{region}", "{meteostation_name}", "{longtitude}", "{latitude}")')
+
+    meteostation_id = cursor.lastrowid
+
+    act_datetime = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute(
+        f'INSERT INTO datasources VALUES (null, "{meteostation_id}", "{datasource_url}", "{act_datetime}")')
+
+    data_to_sql = create_list_for_bulk(meteostation_id, csv_file)
+    cursor.executemany("INSERT INTO temperatures (id, meteostation_id, date, temperature) VALUES (NULL,?,?,?)", data_to_sql)
+    
 
 def fill_database(connection, cursor):
     create_data_structure(cursor)
