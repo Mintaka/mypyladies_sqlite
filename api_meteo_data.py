@@ -109,31 +109,45 @@ def get_monthly_average_temperatures(cursor, date_from=None, date_to=None, meteo
         results [k] = results_month
     return results
 
-def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations = None , limit=None):
+def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteostations = 1 , limit=None):
     import datetime
     from itertools import groupby
-    
-    # Database Query
-    daily = cursor.execute(f"""SELECT meteostation_id,date,temperature FROM temperatures
-                                    WHERE date BETWEEN '{date_from}' AND '{date_to}'
-                                    AND meteostation_id = {meteostations};""")
-    
-    daily_result = daily.fetchall()
     
     # Initialization variables
     date_weekly = []
     week_group = []
     temp_av = [] 
     year_results = {}
-
-    # Convert to date time format with week numbers
-    for m_id, date, temp  in daily_result:
-        date_reformat = datetime.datetime.strptime(date,"%Y-%m-%d")
-        n_week = date_reformat.strftime("%W")
-        n_year = date_reformat.strftime("%Y")
+    
+    # Weekly average temperature for all meteostations
+    if meteostations == None:
+        daily = cursor.execute(f"""SELECT date,temperature FROM temperatures
+                                    WHERE date BETWEEN '{date_from}' AND '{date_to};'
+                                    """)
+        daily_result = daily.fetchall()
         
-        date_weekly.append((n_year,n_week, temp))
-      
+        # Convert to date time format with week numbers
+        for date, temp  in daily_result:
+            date_reformat = datetime.datetime.strptime(date,"%Y-%m-%d")
+            n_week = date_reformat.strftime("%W")
+            n_year = date_reformat.strftime("%Y")
+            date_weekly.append((n_year,n_week, temp))
+            
+    # Weekly average temperature for specific meteostation
+    else:
+        daily = cursor.execute(f"""SELECT meteostation_id,date,temperature FROM temperatures
+                                    WHERE date BETWEEN '{date_from}' AND '{date_to}'
+                                    AND meteostation_id = {meteostations};""")
+        daily_result = daily.fetchall()
+        
+       # Convert to date time format with week numbers
+        for m_id, date, temp  in daily_result:
+            date_reformat = datetime.datetime.strptime(date,"%Y-%m-%d")
+            n_week = date_reformat.strftime("%W")
+            n_year = date_reformat.strftime("%Y")
+            
+            date_weekly.append((n_year,n_week, temp))
+
      # Group data by weeks
     for key_week, group in groupby(date_weekly, lambda x: x[1]):
          week = list(group)
@@ -152,18 +166,20 @@ def get_weekly_average_temperatures(cursor, date_from=None, date_to=None, meteos
     # Group data by years 
     year_results = {}
 
-    x = {}
+    results = {}
     for year_key, group in groupby(temp_av, lambda x: x[0]):
-        y = list(group)
-        year_results.update({year_key: y})
+        year_group = list(group)
+        year_results.update({year_key: year_group})
     
     # Create dicionary of results 
     for key in year_results.keys():
             week_results = {}
             for week_key, group in groupby(year_results [key], lambda x: x[1]):
-                y = list(group)
-                week_results.update({week_key: y[0][2]})
-            x [key] = week_results
+                week_group = list(group)
+                week_results.update({week_key: week_group[0][2]})
+            results [key] = week_results
+    
+    return results
 
 
 if __name__ == '__main__':
