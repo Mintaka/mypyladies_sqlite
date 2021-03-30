@@ -2,8 +2,7 @@
 
 {% block content %}
 <body>
-
-        <h4>Meteorologické stanice</h4>
+      <h4>Meteorologické stanice</h4>
         <section>
             <div class="table-wrapper">
                 <table>
@@ -12,7 +11,7 @@
                         <th>Id</th>
                         <th>Region</th>
                         <th>Name</th>
-                        <th>Longtitude</th>
+                        <th>Longitude</th>
                         <th>Latitude</th>
                     </tr>
                     </thead>
@@ -31,6 +30,6 @@
                 </table>
             </div>
         </section>
-
+      <a href="{{url_for('map_of_meteostations')}}">Switch to map</a>
 </body>
 {% endblock %}

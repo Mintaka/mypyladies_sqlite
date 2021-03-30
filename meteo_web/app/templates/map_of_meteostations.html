@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_b2dd4588400744f0aa4ce183fb5801d5 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>
+
+            <div class="folium-map" id="map_b2dd4588400744f0aa4ce183fb5801d5" ></div>
+
+</body>
+<script>    
+    
+            var map_b2dd4588400744f0aa4ce183fb5801d5 = L.map(
+                "map_b2dd4588400744f0aa4ce183fb5801d5",
+                {
+                    center: [49.817493, 15.472962],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 7,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_1492624d89ad4c7483cc9680cab6bdc8 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var marker_6b0cc7be4f5d4d3eacebbbb7ee97b613 = L.marker(
+                [49.78862, 14.69668],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_3fe0ae22d6da42479626f5ea45ed2a03 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_6b0cc7be4f5d4d3eacebbbb7ee97b613.setIcon(icon_3fe0ae22d6da42479626f5ea45ed2a03);
+        
+    
+        var popup_e5bb6356ebfc4c7fa556ca9ad6a3cfcf = L.popup({"maxWidth": "100%"});
+
+        
+            var html_a1878c169a2149e9b12811581a3b430a = $(`<div id="html_a1878c169a2149e9b12811581a3b430a" style="width: 100.0%; height: 100.0%;">Benešov</div>`)[0];
+            popup_e5bb6356ebfc4c7fa556ca9ad6a3cfcf.setContent(html_a1878c169a2149e9b12811581a3b430a);
+        
+
+        marker_6b0cc7be4f5d4d3eacebbbb7ee97b613.bindPopup(popup_e5bb6356ebfc4c7fa556ca9ad6a3cfcf)
+        ;
+
+        
+    
+    
+            var marker_6a6eeda121de4d098d76e6e02a026215 = L.marker(
+                [48.816603, 14.799947],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_d25dae035623473bbdcd97286b939c17 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_6a6eeda121de4d098d76e6e02a026215.setIcon(icon_d25dae035623473bbdcd97286b939c17);
+        
+    
+        var popup_10c5167891194a84a263cb17c1ba7bf6 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_7ed3b6a7af1e41678eb37bd89d70dc91 = $(`<div id="html_7ed3b6a7af1e41678eb37bd89d70dc91" style="width: 100.0%; height: 100.0%;">Byňov</div>`)[0];
+            popup_10c5167891194a84a263cb17c1ba7bf6.setContent(html_7ed3b6a7af1e41678eb37bd89d70dc91);
+        
+
+        marker_6a6eeda121de4d098d76e6e02a026215.bindPopup(popup_10c5167891194a84a263cb17c1ba7bf6)
+        ;
+
+        
+    
+    
+            var marker_2ff6d10aacd140d9b35b650d98763c6b = L.marker(
+                [49.95, 15.7833],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_5ae888f4a82c469d9226ff95fd5c3e0f = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_2ff6d10aacd140d9b35b650d98763c6b.setIcon(icon_5ae888f4a82c469d9226ff95fd5c3e0f);
+        
+    
+        var popup_8a8fe5ac8f6b4718bfc76e85938b1a35 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_b99753120d1d4d4095e0501713b5b1d9 = $(`<div id="html_b99753120d1d4d4095e0501713b5b1d9" style="width: 100.0%; height: 100.0%;">Chrudim</div>`)[0];
+            popup_8a8fe5ac8f6b4718bfc76e85938b1a35.setContent(html_b99753120d1d4d4095e0501713b5b1d9);
+        
+
+        marker_2ff6d10aacd140d9b35b650d98763c6b.bindPopup(popup_8a8fe5ac8f6b4718bfc76e85938b1a35)
+        ;
+
+        
+    
+    
+            var marker_94b45194357544c29c721dd5ae664d90 = L.marker(
+                [49.444716, 12.922385],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_3094c35bae624bbba654a21c752ba93d = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_94b45194357544c29c721dd5ae664d90.setIcon(icon_3094c35bae624bbba654a21c752ba93d);
+        
+    
+        var popup_5ecd1a1eb72e44c9a323c33f95f04e95 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_5e8f6573a4c44f0ba23ede8fb6b7cd02 = $(`<div id="html_5e8f6573a4c44f0ba23ede8fb6b7cd02" style="width: 100.0%; height: 100.0%;">Domažlice</div>`)[0];
+            popup_5ecd1a1eb72e44c9a323c33f95f04e95.setContent(html_5e8f6573a4c44f0ba23ede8fb6b7cd02);
+        
+
+        marker_94b45194357544c29c721dd5ae664d90.bindPopup(popup_5ecd1a1eb72e44c9a323c33f95f04e95)
+        ;
+
+        
+    
+    
+            var marker_a45a7f2d64b84a91b1367d817839920d = L.marker(
+                [48.73053, 14.72717],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_fd3f72e778884a7ebdc697e8ebc928f8 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_a45a7f2d64b84a91b1367d817839920d.setIcon(icon_fd3f72e778884a7ebdc697e8ebc928f8);
+        
+    
+        var popup_bd54e8060a3a4fd090ea140c66c99aac = L.popup({"maxWidth": "100%"});
+
+        
+            var html_fd9e660be98f4ba985cb8f569a8da23f = $(`<div id="html_fd9e660be98f4ba985cb8f569a8da23f" style="width: 100.0%; height: 100.0%;">Horní Stropnice, Hojná Voda</div>`)[0];
+            popup_bd54e8060a3a4fd090ea140c66c99aac.setContent(html_fd9e660be98f4ba985cb8f569a8da23f);
+        
+
+        marker_a45a7f2d64b84a91b1367d817839920d.bindPopup(popup_bd54e8060a3a4fd090ea140c66c99aac)
+        ;
+
+        
+    
+    
+            var marker_56cfe99bfbee4a9abf1a018c6cdbb296 = L.marker(
+                [50.222602, 15.787769],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_f3e0f5e96db54846b037774acf1029bb = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_56cfe99bfbee4a9abf1a018c6cdbb296.setIcon(icon_f3e0f5e96db54846b037774acf1029bb);
+        
+    
+        var popup_212b0f7776ab40378deaaa133e5cf630 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_6e49b973a572495f88d489ac5fb699fb = $(`<div id="html_6e49b973a572495f88d489ac5fb699fb" style="width: 100.0%; height: 100.0%;">Hradec Králové, Svobodné Dvory</div>`)[0];
+            popup_212b0f7776ab40378deaaa133e5cf630.setContent(html_6e49b973a572495f88d489ac5fb699fb);
+        
+
+        marker_56cfe99bfbee4a9abf1a018c6cdbb296.bindPopup(popup_212b0f7776ab40378deaaa133e5cf630)
+        ;
+
+        
+    
+    
+            var marker_f8b2db0ecc4f4f62bdcfe22f9ac8b786 = L.marker(
+                [50.6183, 14.7194],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_8d57c07e14fc4055b8820e1545aae1e8 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_f8b2db0ecc4f4f62bdcfe22f9ac8b786.setIcon(icon_8d57c07e14fc4055b8820e1545aae1e8);
+        
+    
+        var popup_08a933878887487abb3c21ac46ed70f8 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_c4e3b52012074125a92766045b086a38 = $(`<div id="html_c4e3b52012074125a92766045b086a38" style="width: 100.0%; height: 100.0%;">Hradčany</div>`)[0];
+            popup_08a933878887487abb3c21ac46ed70f8.setContent(html_c4e3b52012074125a92766045b086a38);
+        
+
+        marker_f8b2db0ecc4f4f62bdcfe22f9ac8b786.bindPopup(popup_08a933878887487abb3c21ac46ed70f8)
+        ;
+
+        
+    
+    
+            var marker_25cedbb704fd46a7b948092dc8dc1e2a = L.marker(
+                [49.721111, 15.086667],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_a79f863b6118451ba7baddd5c82c782a = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_25cedbb704fd46a7b948092dc8dc1e2a.setIcon(icon_a79f863b6118451ba7baddd5c82c782a);
+        
+    
+        var popup_dc4157c78a2b4379add494ad09f8a9cf = L.popup({"maxWidth": "100%"});
+
+        
+            var html_156ee67179464bed877fcf661e32e1f8 = $(`<div id="html_156ee67179464bed877fcf661e32e1f8" style="width: 100.0%; height: 100.0%;">Hulice</div>`)[0];
+            popup_dc4157c78a2b4379add494ad09f8a9cf.setContent(html_156ee67179464bed877fcf661e32e1f8);
+        
+
+        marker_25cedbb704fd46a7b948092dc8dc1e2a.bindPopup(popup_dc4157c78a2b4379add494ad09f8a9cf)
+        ;
+
+        
+    
+    
+            var marker_9b225c42d7364126ba9348d68433f7db = L.marker(
+                [49.145556, 13.55],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_3caac103bd384e6cbec4758c9f02c5e7 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_9b225c42d7364126ba9348d68433f7db.setIcon(icon_3caac103bd384e6cbec4758c9f02c5e7);
+        
+    
+        var popup_f1e52e167f384423948130a8d242f440 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_860916858bd1428db3c6386f1f9e5661 = $(`<div id="html_860916858bd1428db3c6386f1f9e5661" style="width: 100.0%; height: 100.0%;">Kašperské Hory</div>`)[0];
+            popup_f1e52e167f384423948130a8d242f440.setContent(html_860916858bd1428db3c6386f1f9e5661);
+        
+
+        marker_9b225c42d7364126ba9348d68433f7db.bindPopup(popup_f1e52e167f384423948130a8d242f440)
+        ;
+
+        
+    
+    
+            var marker_826c167f1ba64a8dbca4432f6e613c76 = L.marker(
+                [49.8219, 15.7383],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_e3540c42e6b4473299172a49f1e7545f = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_826c167f1ba64a8dbca4432f6e613c76.setIcon(icon_e3540c42e6b4473299172a49f1e7545f);
+        
+    
+        var popup_dd5ee214c2f14a4cafdf435e5b9ccca1 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_9c8b187b493a4fefa885932a1dac079c = $(`<div id="html_9c8b187b493a4fefa885932a1dac079c" style="width: 100.0%; height: 100.0%;">Krásné</div>`)[0];
+            popup_dd5ee214c2f14a4cafdf435e5b9ccca1.setContent(html_9c8b187b493a4fefa885932a1dac079c);
+        
+
+        marker_826c167f1ba64a8dbca4432f6e613c76.bindPopup(popup_dd5ee214c2f14a4cafdf435e5b9ccca1)
+        ;
+
+        
+    
+    
+            var marker_88f35a3befdc4690998ca73a3466eac7 = L.marker(
+                [49.366344, 13.135593],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_9ca9db32d0f244c7a5c158da7d73ae37 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_88f35a3befdc4690998ca73a3466eac7.setIcon(icon_9ca9db32d0f244c7a5c158da7d73ae37);
+        
+    
+        var popup_0032ac3f0bde4a51ab0759c3722d2872 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_86afe93c5bce49c99e00005697d6aa0f = $(`<div id="html_86afe93c5bce49c99e00005697d6aa0f" style="width: 100.0%; height: 100.0%;">Libkov</div>`)[0];
+            popup_0032ac3f0bde4a51ab0759c3722d2872.setContent(html_86afe93c5bce49c99e00005697d6aa0f);
+        
+
+        marker_88f35a3befdc4690998ca73a3466eac7.bindPopup(popup_0032ac3f0bde4a51ab0759c3722d2872)
+        ;
+
+        
+    
+    
+            var marker_be7e3052aaeb491791682926a02ac2e6 = L.marker(
+                [49.4575, 16.5367],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_16c2a3d2a1764b948bcbae48cce8f755 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_be7e3052aaeb491791682926a02ac2e6.setIcon(icon_16c2a3d2a1764b948bcbae48cce8f755);
+        
+    
+        var popup_38ce637763944819961450b7a96c781e = L.popup({"maxWidth": "100%"});
+
+        
+            var html_a356e4473211421f9c275a732c42dc6f = $(`<div id="html_a356e4473211421f9c275a732c42dc6f" style="width: 100.0%; height: 100.0%;">Lysice</div>`)[0];
+            popup_38ce637763944819961450b7a96c781e.setContent(html_a356e4473211421f9c275a732c42dc6f);
+        
+
+        marker_be7e3052aaeb491791682926a02ac2e6.bindPopup(popup_38ce637763944819961450b7a96c781e)
+        ;
+
+        
+    
+    
+            var marker_6cb162d47fb741a2af5a7ed5de3d1b38 = L.marker(
+                [49.818411, 14.521178],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_87e2cffae51f4239a48cf7b011a1c41d = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_6cb162d47fb741a2af5a7ed5de3d1b38.setIcon(icon_87e2cffae51f4239a48cf7b011a1c41d);
+        
+    
+        var popup_e9266f1ac2bf44cbbc73e006eb131923 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_8cddbbd601194f51bb56090968734348 = $(`<div id="html_8cddbbd601194f51bb56090968734348" style="width: 100.0%; height: 100.0%;">Netvořice</div>`)[0];
+            popup_e9266f1ac2bf44cbbc73e006eb131923.setContent(html_8cddbbd601194f51bb56090968734348);
+        
+
+        marker_6cb162d47fb741a2af5a7ed5de3d1b38.bindPopup(popup_e9266f1ac2bf44cbbc73e006eb131923)
+        ;
+
+        
+    
+    
+            var marker_5824b8f7609c4fbf8f33ccdf368a0fc5 = L.marker(
+                [50.237553, 15.497443],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_346a37ed8cec4eaab24ab7d031013d8b = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_5824b8f7609c4fbf8f33ccdf368a0fc5.setIcon(icon_346a37ed8cec4eaab24ab7d031013d8b);
+        
+    
+        var popup_6902dc1b274c46f584f2c678e0114b2b = L.popup({"maxWidth": "100%"});
+
+        
+            var html_3aae9e4ba4df45a48fa06af72553edf6 = $(`<div id="html_3aae9e4ba4df45a48fa06af72553edf6" style="width: 100.0%; height: 100.0%;">Nový Bydžov</div>`)[0];
+            popup_6902dc1b274c46f584f2c678e0114b2b.setContent(html_3aae9e4ba4df45a48fa06af72553edf6);
+        
+
+        marker_5824b8f7609c4fbf8f33ccdf368a0fc5.bindPopup(popup_6902dc1b274c46f584f2c678e0114b2b)
+        ;
+
+        
+    
+    
+            var marker_43aec5f3cf2c45449b85141432026263 = L.marker(
+                [49.555, 16.4231],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_dacf51a295eb40f2a3f5075fa7f49de8 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_43aec5f3cf2c45449b85141432026263.setIcon(icon_dacf51a295eb40f2a3f5075fa7f49de8);
+        
+    
+        var popup_3348ddc09bcc40c396902f5577240eaf = L.popup({"maxWidth": "100%"});
+
+        
+            var html_31d272e9fe104d95b935134df801f1b2 = $(`<div id="html_31d272e9fe104d95b935134df801f1b2" style="width: 100.0%; height: 100.0%;">Olešnice</div>`)[0];
+            popup_3348ddc09bcc40c396902f5577240eaf.setContent(html_31d272e9fe104d95b935134df801f1b2);
+        
+
+        marker_43aec5f3cf2c45449b85141432026263.bindPopup(popup_3348ddc09bcc40c396902f5577240eaf)
+        ;
+
+        
+    
+    
+            var marker_383f0e6bad4044f0b36ba17f4bbc9604 = L.marker(
+                [49.764722, 13.378889],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_72c320e6bd384ab68075c8c4258703c5 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_383f0e6bad4044f0b36ba17f4bbc9604.setIcon(icon_72c320e6bd384ab68075c8c4258703c5);
+        
+    
+        var popup_38859384875646d1a4a60e9b028b6f9b = L.popup({"maxWidth": "100%"});
+
+        
+            var html_2ce1ec7c7e0b4ef9b41a37b1fcdd6acb = $(`<div id="html_2ce1ec7c7e0b4ef9b41a37b1fcdd6acb" style="width: 100.0%; height: 100.0%;">Plzeň, Mikulka</div>`)[0];
+            popup_38859384875646d1a4a60e9b028b6f9b.setContent(html_2ce1ec7c7e0b4ef9b41a37b1fcdd6acb);
+        
+
+        marker_383f0e6bad4044f0b36ba17f4bbc9604.bindPopup(popup_38859384875646d1a4a60e9b028b6f9b)
+        ;
+
+        
+    
+    
+            var marker_6c90f7b3668c4492aa58dfa22f660efe = L.marker(
+                [50.79683, 14.08536],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_dddae5b999d24b488206f285dcaba7cf = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_6c90f7b3668c4492aa58dfa22f660efe.setIcon(icon_dddae5b999d24b488206f285dcaba7cf);
+        
+    
+        var popup_b18b803e128c41689785e67b1364b07c = L.popup({"maxWidth": "100%"});
+
+        
+            var html_5a4d97dacec949019ec0fd1a45ae4f8f = $(`<div id="html_5a4d97dacec949019ec0fd1a45ae4f8f" style="width: 100.0%; height: 100.0%;">Sněžník</div>`)[0];
+            popup_b18b803e128c41689785e67b1364b07c.setContent(html_5a4d97dacec949019ec0fd1a45ae4f8f);
+        
+
+        marker_6c90f7b3668c4492aa58dfa22f660efe.bindPopup(popup_b18b803e128c41689785e67b1364b07c)
+        ;
+
+        
+    
+    
+            var marker_ef1a4eddf3ff40bb9445802e4685e2d3 = L.marker(
+                [50.70361, 14.80739],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_2e7382707971485c93c64c9a1da2fdc5 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_ef1a4eddf3ff40bb9445802e4685e2d3.setIcon(icon_2e7382707971485c93c64c9a1da2fdc5);
+        
+    
+        var popup_3029bd873c23486b93e311f62cf13d49 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_683c70ecc8624562a614647c88fb4091 = $(`<div id="html_683c70ecc8624562a614647c88fb4091" style="width: 100.0%; height: 100.0%;">Stráž pod Ralskem</div>`)[0];
+            popup_3029bd873c23486b93e311f62cf13d49.setContent(html_683c70ecc8624562a614647c88fb4091);
+        
+
+        marker_ef1a4eddf3ff40bb9445802e4685e2d3.bindPopup(popup_3029bd873c23486b93e311f62cf13d49)
+        ;
+
+        
+    
+    
+            var marker_5785dc9e7af845b0b2b86b1e9b95b8aa = L.marker(
+                [49.2381, 13.5283],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_8dd6282e6f054f3fa431f48e97644eec = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_5785dc9e7af845b0b2b86b1e9b95b8aa.setIcon(icon_8dd6282e6f054f3fa431f48e97644eec);
+        
+    
+        var popup_4394fedd51a942709232eabc25c1b6aa = L.popup({"maxWidth": "100%"});
+
+        
+            var html_4b9e1c7288eb4f7394fa04302cefc028 = $(`<div id="html_4b9e1c7288eb4f7394fa04302cefc028" style="width: 100.0%; height: 100.0%;">Sušice</div>`)[0];
+            popup_4394fedd51a942709232eabc25c1b6aa.setContent(html_4b9e1c7288eb4f7394fa04302cefc028);
+        
+
+        marker_5785dc9e7af845b0b2b86b1e9b95b8aa.bindPopup(popup_4394fedd51a942709232eabc25c1b6aa)
+        ;
+
+        
+    
+    
+            var marker_308c80cdf930494ab69e89dac6bf03b6 = L.marker(
+                [50.90556, 14.60222],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_9cb260f30cc04aef81cf3d508684d1dc = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_308c80cdf930494ab69e89dac6bf03b6.setIcon(icon_9cb260f30cc04aef81cf3d508684d1dc);
+        
+    
+        var popup_99c6ba5786614bf4ae7f8f37e529099e = L.popup({"maxWidth": "100%"});
+
+        
+            var html_a6cf09599a22400f9a47bb60bbe70ace = $(`<div id="html_a6cf09599a22400f9a47bb60bbe70ace" style="width: 100.0%; height: 100.0%;">Varnsdorf</div>`)[0];
+            popup_99c6ba5786614bf4ae7f8f37e529099e.setContent(html_a6cf09599a22400f9a47bb60bbe70ace);
+        
+
+        marker_308c80cdf930494ab69e89dac6bf03b6.bindPopup(popup_99c6ba5786614bf4ae7f8f37e529099e)
+        ;
+
+        
+    
+    
+            var marker_57d7cc8e0e3b488cae72f7c7882d9792 = L.marker(
+                [49.6228, 15.0428],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_11a291bde6fb497fa6bb060a46deb995 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_57d7cc8e0e3b488cae72f7c7882d9792.setIcon(icon_11a291bde6fb497fa6bb060a46deb995);
+        
+    
+        var popup_3c03cf7b9fc44e0b8d8802b6e3fee7c4 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_8fac5e73082c4358b5175106f024190e = $(`<div id="html_8fac5e73082c4358b5175106f024190e" style="width: 100.0%; height: 100.0%;">Čechtice</div>`)[0];
+            popup_3c03cf7b9fc44e0b8d8802b6e3fee7c4.setContent(html_8fac5e73082c4358b5175106f024190e);
+        
+
+        marker_57d7cc8e0e3b488cae72f7c7882d9792.bindPopup(popup_3c03cf7b9fc44e0b8d8802b6e3fee7c4)
+        ;
+
+        
+    
+    
+            var marker_44be41f6377d4372a3f1d7f9676e4d53 = L.marker(
+                [48.9469, 14.4292],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_72bb41f04c36420a8d093db372bdeb4f = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_44be41f6377d4372a3f1d7f9676e4d53.setIcon(icon_72bb41f04c36420a8d093db372bdeb4f);
+        
+    
+        var popup_00082ea5af06474ca480d136e489f862 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_d082f4eac5264527b91686beaafcdd7a = $(`<div id="html_d082f4eac5264527b91686beaafcdd7a" style="width: 100.0%; height: 100.0%;">České Budějovice, Planá</div>`)[0];
+            popup_00082ea5af06474ca480d136e489f862.setContent(html_d082f4eac5264527b91686beaafcdd7a);
+        
+
+        marker_44be41f6377d4372a3f1d7f9676e4d53.bindPopup(popup_00082ea5af06474ca480d136e489f862)
+        ;
+
+        
+    
+    
+            var marker_061698c4ce9f43d8bbfcd642705e4bf5 = L.marker(
+                [48.951944, 14.469722],
+                {}
+            ).addTo(map_b2dd4588400744f0aa4ce183fb5801d5);
+        
+    
+            var icon_ca3ab105c5d142efa5d5811d5d9fbf81 = L.AwesomeMarkers.icon(
+                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": "blue", "prefix": "glyphicon"}
+            );
+            marker_061698c4ce9f43d8bbfcd642705e4bf5.setIcon(icon_ca3ab105c5d142efa5d5811d5d9fbf81);
+        
+    
+        var popup_7dae7fa1e0d0439692f5d14028b94bfd = L.popup({"maxWidth": "100%"});
+
+        
+            var html_7afccd7fe10c43b0b48b9b65bfee99a4 = $(`<div id="html_7afccd7fe10c43b0b48b9b65bfee99a4" style="width: 100.0%; height: 100.0%;">České Budějovice,Rožnov</div>`)[0];
+            popup_7dae7fa1e0d0439692f5d14028b94bfd.setContent(html_7afccd7fe10c43b0b48b9b65bfee99a4);
+        
+
+        marker_061698c4ce9f43d8bbfcd642705e4bf5.bindPopup(popup_7dae7fa1e0d0439692f5d14028b94bfd)
+        ;
+
+        
+    
+</script>

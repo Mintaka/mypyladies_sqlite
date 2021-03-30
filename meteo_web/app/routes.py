@@ -3,7 +3,6 @@ from app import app
 from flask import render_template
 from app.models import *
 
-
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -18,3 +17,6 @@ def meteostation(meteo_id):
     return render_template('meteostation.html', title='Data',  meteost=my_meteost, meteost_data=meteost_data)
 
 
+@app.route('/meteostation/map', methods=['GET', 'POST'])
+def map_of_meteostations():
+    return render_template('map_of_meteostations.html')
