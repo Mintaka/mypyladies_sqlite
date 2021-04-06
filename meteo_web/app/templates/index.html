@@ -3,6 +3,21 @@
 {% block content %}
 <body>
       <h4>Meteorologické stanice</h4>
+      <form action="" method="post">
+          {{form.hidden_tag() }}
+          <div>
+              {{form.meteostation.label}}
+              {{form.meteostation}}
+          </div>
+            <br>
+          <div>
+              {{form.part_name}}
+              {{form.part_name.label}}
+          </div>
+          <div>
+              {{form.submit() }}
+          </div>
+      </form>
         <section>
             <div class="table-wrapper">
                 <table>
