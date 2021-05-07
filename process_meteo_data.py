@@ -122,6 +122,7 @@ def update_measurement_format(measurement):
         updated_measurement = measurement
     return updated_measurement
 
+
 def create_list_for_bulk(location_id, csv_file):
     location_entries = []
 
